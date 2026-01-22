@@ -15,6 +15,7 @@ git remote add origin https://github.com/Quetur/rosalesimports.git
 git push -u origin main
 
 actualizar
-git remote add origin https://github.com/Quetur/rosalesimports.git
+git add .
+git commit -m "actualizacion"           
 git branch -M main
 git push -u origin main
