@@ -11,36 +11,40 @@
     {{#each pro}}
     <article class="grid-div">
       <table border=0 style="border-collapse: separate;" id="tabla">
-          <td align="center" colspan="2">
-            {{#if foto2}}
-           <!-- <img class="grid-img" src="../../img/{{foto2}}" value="../../img/{{foto2}}" />-->
-           <img class="grid-img" src="{{foto2}}" />
-
-            {{else}}
-            <img class="grid-img" />
-
-            {{/if}}
-            <input id="foto_{{id_producto}}" value="{{foto2}}" hidden=true></input>
-          </td>
-        </tr>
         <tr> <!--renglon de descripcion  -->
-          <td valign="top" class="descripcion-producto" colspan="2" data-serch={{des}}>
+          <td valign="top" align="center" class="descripcion-producto" colspan="2" data-serch={{des}}>
             <a>{{des}}</a>
             <input id="desc_{{id_producto}}" value="{{des}}" hidden=true> </input>
           </td>
         </tr>
+        <td align="center" colspan="2">
+          {{#if foto2}}
+          <!-- <img class="grid-img" src="../../img/{{foto2}}" value="../../img/{{foto2}}" />-->
+          <img class="grid-img" src="{{foto2}}" />
+
+          {{else}}
+          <img class="grid-img" />
+
+          {{/if}}
+          <input id="foto_{{id_producto}}" value="{{foto2}}" hidden=true></input>
+        </td>
+        </tr>
+
+
+
         <tr>
           <td class="nota" style="height: 150px;">
             <a>{{nota}}</a>
-            <input id="tipo_{{id_producto}}" value="{{tipoventa}}" style="width:200px; align= right"hidden=true></input>
-            <BR>Precio por &nbsp{{tipoventa}} </BR> 
+            <input id="tipo_{{id_producto}}" value="{{tipoventa}}" style="width:200px; align= right"
+              hidden=true></input>
+            <BR>Precio por &nbsp{{tipoventa}} </BR>
           </td>
           <td>
             <input value={{precio1}} readonly hidden=true></input>
             <p class="total-price" align="botton">$&nbsp&nbsp{{precio1}}</p>
           </td>
         </tr>
-        <tr>  <!--renglon de precio unitario 2 columnas  -->
+        <tr> <!--renglon de precio unitario 2 columnas  -->
           <td class="nota" align="center">
             <input id="precio_{{id_producto}}" value={{precio1}} readonly hidden=true></input>
             <!--<input type="text" class="total-price" align="right" width="20%" id="unidad_{{id_producto}}"
@@ -48,49 +52,50 @@
 
           </td>
           <td align="center">
-              <input type="text" class="total-price" align="right" width="20%" id="unidad_{{id_producto}}"
-                value={{unidad}} hidden=true></input>
-              <!--<input type="text" value={{tipoventa}} hidden=true></input>-->
+            <input type="text" class="total-price" align="center" width="20%" id="unidad_{{id_producto}}"
+              value={{unidad}} hidden=true></input>
+            <!--<input type="text" value={{tipoventa}} hidden=true></input>-->
           </td>
         </tr>
         <tr> <!--renglon de botones  -->
-         
-            <td style="width: 300px;" align="center"> <!--columna de botones -->
-               <div class="quantity">
+
+          <td style="width: 300px;" align="center"> <!--columna de botones -->
+            <div class="quantity">
               <button class="minus-btn" type="button" id="BotonMenos" value="{{id_producto}}">-</button>
-                <!--<img class="minus-btn" id="BotonMenos" value="{{id_producto}}" style="width:50px;" src="../../img/minus.png" alt="minus-btn" />
+              <!--<img class="minus-btn" id="BotonMenos" value="{{id_producto}}" style="width:50px;" src="../../img/minus.png" alt="minus-btn" />
                   </button>-->
-              <input style="width: 80px;" type="number" class="quantity.input" id="cantidad_{{id_producto}}" value="0" readonly step="1" pattern="\\d*" ></input>
-               
-               
+              <input style="width: 80px;" type="number" class="quantity.input" id="cantidad_{{id_producto}}" value="0"
+                readonly step="1" pattern="\\d*"></input>
+
+
               <button class="plus-btn" type="button" value="{{id_producto}}">+</button>
-                 <!-- <img style="width:50px;" src="../../img/plus.png" alt="suma" id="BotonMas">-->
-             
+              <!-- <img style="width:50px;" src="../../img/plus.png" alt="suma" id="BotonMas">-->
+
 
               <button class="sumacanasto" type="button" id="{{id_producto}}" value="{{id_producto}}">Agregar</button>
               <!--<img style="width:100px margin-top: 10px;" src="../../img/ponecarrito.png" alt="sumacanasto" />-->
-              
-            </td>
-            <td align="right">
-              <input type="text" class="total-price" style="background-color:rgb(245, 245, 233);" id="total_{{id_producto}}" value="0"
-                readonly></input>
-                </div>
-            </td>
-          
-        </tr>
+
+          </td>
+          <td align="right">
+            <input type="text" class="total-price" style="background-color:rgb(245, 245, 233);"
+              id="total_{{id_producto}}" value="0" readonly></input>
+  </div>
+  </td>
+
+  </tr>
 
 
-      </table>
-    </article>
+  </table>
+  </article>
 
-    {{/each}}
+  {{/each}}
   </div>
 
 
 
 
   <script type="text/javascript">
-    let items=0;
+    let items = 0;
 
     $(document).ready(function () {
       console.log('pulsa producto_dos');
@@ -99,33 +104,30 @@
 
       console.log('this');
       console.dir(this);
-      
-      $('#search').keyup(function(){  
+
+      $('#search').keyup(function () {
         console.log('busca');
-          search_table($(this).val());  
-      });  
+        search_table($(this).val());
+      });
 
-      function search_table(value){  
-          $('#tabla tr').each(function(){  
-                var found = 'false';  
-                $(this).each(function(){  
-                    if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0)  
-                    {  
-                          found = 'true';  
-                    }  
-                });  
-                if(found == 'true')  
-                {  
-                    $(this).show();  
-                }  
-                else  
-                {  
-                    $(this).hide();  
-                }  
-          });  
-      }  
+      function search_table(value) {
+        $('#tabla tr').each(function () {
+          var found = 'false';
+          $(this).each(function () {
+            if ($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+              found = 'true';
+            }
+          });
+          if (found == 'true') {
+            $(this).show();
+          }
+          else {
+            $(this).hide();
+          }
+        });
+      }
 
-      
+
       $('.plus-btn').on('click', function (e) {
 
         console.log('aa');
@@ -133,21 +135,20 @@
         var str = parseFloat($("#cantidad_" + id).val());
         var unidad = parseFloat($("#unidad_" + id).val());
         var price = parseFloat($("#precio_" + id).val());
-        var tipo =  $("#tipo_" + id).val();
-        var stotal =  parseFloat($("#total_" + id).val());
-        console.log("unidad",unidad);
+        var tipo = $("#tipo_" + id).val();
+        var stotal = parseFloat($("#total_" + id).val());
+        console.log("unidad", unidad);
         console.dir(tipo);
         console.log(price);
         console.log(unidad);
         console.log(str);
         let total_item = 0;
         console.log(str);
-        if (tipo =='kilo.') {
-            str = parseFloat(str + 1).toFixed(0); //  cantidad
-            total_item = parseFloat(price * str * unidad).toFixed(0);
+        if (tipo == 'kilo.') {
+          str = parseFloat(str + 1).toFixed(0); //  cantidad
+          total_item = parseFloat(price * str * unidad).toFixed(0);
         }
-        else
-        {
+        else {
           str = parseFloat(str + unidad).toFixed(0); //  cantidad
           total_item = parseFloat(price * str).toFixed(0);
         }
@@ -166,11 +167,11 @@
         var str = parseFloat($("#cantidad_" + id).val());
         var price = parseFloat($("#precio_" + id).val());
         var unidad = parseFloat($("#unidad_" + id).val());
-        var tipo =  $("#tipo_" + id).val();
-        var stotal =  parseFloat($("#total_" + id).val());
+        var tipo = $("#tipo_" + id).val();
+        var stotal = parseFloat($("#total_" + id).val());
 
-      
-        
+
+
         //str = parseFloat(str).toFixed(2);
         console.log(str);
         console.log(unidad);
@@ -188,13 +189,12 @@
           var str = 0;
           var unidad = 0;
         }
-        
-        if (tipo =='kilo.') {
-            str = parseFloat(str - 1).toFixed(0); //  cantidad
-            total_item = parseFloat(price * str * unidad).toFixed(0);
+
+        if (tipo == 'kilo.') {
+          str = parseFloat(str - 1).toFixed(0); //  cantidad
+          total_item = parseFloat(price * str * unidad).toFixed(0);
         }
-        else
-        {
+        else {
           str = parseFloat(str - unidad).toFixed(0); //  cantidad
           total_item = parseFloat(price * str).toFixed(0);
         }
@@ -207,15 +207,15 @@
 
 
       $('.sumacanasto').on('click', function (e) {
-        
+
         console.log('agregar carrito');
         console.log(e.target);
-     
+
         var id = (e.target.value),
-        cant = parseFloat($("#cantidad_" + id).val());
+          cant = parseFloat($("#cantidad_" + id).val());
         console.log($("#tipo_" + id).val());
-       // var stotal =  parseFloat($("#total_" + id).val());
-                
+        // var stotal =  parseFloat($("#total_" + id).val());
+
         const infoProducto = {
           id: id,
           desc: $("#desc_" + id).val(),
@@ -223,7 +223,7 @@
           cant: parseFloat($("#cantidad_" + id).val()),
           unid: parseFloat($("#unidad_" + id).val()),
           precio: parseFloat($("#precio_" + id).val()),
-          tipo:  $("#tipo_" + id).val(),
+          tipo: $("#tipo_" + id).val(),
           stotal: parseFloat($("#total_" + id).val())
         };
 
@@ -241,18 +241,18 @@
         }
         else {
           let productosLS;
-          items=0;
+          items = 0;
           productosLS = obtenerProductosLocalStorage();
           productosLS.forEach(function (productoLS) {
- 
+
             items++;
             if (productoLS.id === infoProducto.id) {
               productosLS = productoLS.id;
             }
           });
-         
 
-           
+
+
           if (productosLS === infoProducto.id) {
             Swal.fire({
               icon: 'error',
@@ -278,9 +278,9 @@
 
           }
 
-          
+
         }
-        
+
         /* Swal.fire({
             icon: 'warning',
             title: 'No se hacen envios hasta el 20 de Julio',
@@ -288,7 +288,7 @@
             showConfirmButton: true,
             timer: false
           })
-        */  
+        */
       });
 
       function obtenerProductosLocalStorage() {
@@ -302,7 +302,7 @@
           console.log('tiene');
           console.dir(localStorage.getItem('productos'));
           productoLS = JSON.parse(localStorage.getItem('productos'));
-         
+
         }
         return productoLS;
       }
