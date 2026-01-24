@@ -16,6 +16,7 @@ git push -u origin main
 
 actualizar
 git add .
-git commit -m "actualizacion"           
+git status
+git commit -m "agrego producto_tres con precios con descuento"           
 git branch -M main
 git push -u origin main

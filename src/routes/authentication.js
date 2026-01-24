@@ -441,14 +441,14 @@ router.get('/producto/:id', async (req, res) => {
   console.log('authentication listado producto');
   if ([req.params.id] == 'todos') {
     const cat = 'Todos los productos';
-    const [pro] = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
+    const [pro] = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
     res.render('producto_dos', { pro, cat });
   }
   else {
-    const [pro] = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
+    const [pro] = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
     const mivar ="jesus";
     console.log("productos ",pro)
-    res.render('producto_dos', { pro, mivar })  // pasar pro a carritoadd
+    res.render('producto_tres', { pro, mivar })  // pasar pro a carritoadd
   }
 });
 
