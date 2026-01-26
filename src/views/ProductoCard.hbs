@@ -58,29 +58,30 @@
 
 
         /* Botón de Cerrar Superior */
-  .close-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%; /* Botón circular */
-    border: none;
-    background: #f0f0f5; /* Color neutro suave */
-    color: #666;
-    font-size: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
+        .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            background: #FF7F7F;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            transition: all 0.2s ease;
+            z-index: 10;
+            border: 2px solid #000000; /* Crea un anillo negro de 2px */
+        }
 
-  .close-btn:hover {
-    background: #ff4d4d; /* Color vibrante al pasar el mouse */
-    color: white;
-    transform: rotate(90deg); /* Animación sutil */
-  }
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: rotate(90deg);
+        }
 
         /* Imagen del Producto */
         .image-container {
