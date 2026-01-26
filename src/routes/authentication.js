@@ -510,7 +510,7 @@ router.get("/producto/:id", async (req, res) => {
 router.get("/producto_detalle/:id", async (req, res) => {
   console.log("entro producto_detalle", [req.params.id]);
  console.log("parametros", [req.params.parametros]); 
-  var consulta = "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_producto ="+ [req.params.id]
+  var consulta = "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,FORMAT(precio1,'N0') as precio1f,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_producto ="+ [req.params.id]
   console.log("consulta", consulta);
   try {
     const [ card ] = await pool.query(consulta);

@@ -47,30 +47,40 @@
             transform: translateY(-5px);
         }
 
-        /* Botón de Cerrar Superior */
-        .close-btn {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            width: 36px;
-            height: 36px;
-            background: #f3f4f6;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            transition: all 0.2s ease;
-            z-index: 10;
+        .card h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.25rem;
+            color: rgb(37 99 235);
+            font-weight: 800;
+            text-align: center;           /* Centra el texto */
+            text-decoration: underline;  /* Añade el subrayado */
         }
 
-        .close-btn:hover {
-            background: var(--danger);
-            color: white;
-            transform: rotate(90deg);
-        }
+
+        /* Botón de Cerrar Superior */
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Botón circular */
+    border: none;
+    background: #f0f0f5; /* Color neutro suave */
+    color: #666;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .close-btn:hover {
+    background: #ff4d4d; /* Color vibrante al pasar el mouse */
+    color: white;
+    transform: rotate(90deg); /* Animación sutil */
+  }
 
         /* Imagen del Producto */
         .image-container {
@@ -99,19 +109,17 @@
         }
 
         /* Información */
-        .content h2 {
+
+
+        .card h2 {
             margin: 0 0 8px 0;
             font-size: 1.25rem;
             color: var(--text-main);
             font-weight: 800;
         }
 
-        .content p {
-            margin: 0 0 20px 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
+
+
 
         .price-tag {
             font-size: 1.5rem;
@@ -119,6 +127,7 @@
             color: var(--primary);
             display: block;
             margin-bottom: 20px;
+            text-align: right;
         }
 
         /* Controles de Cantidad Agrandados */
@@ -202,10 +211,10 @@
 </head>
 
 <body>
-   {{#each card}}
+    {{#each card}}
     <article class="card" id="product-card">
         <div>
-            <h3 class="text-2xl font-bold text-blue-600 uppercase tracking-wider mb-1 text-center">
+            <h3 class="!w-full text-2xl !font-bold !text-blue-600 uppercase tracking-wider mb-1 !text-center">
                 {{titulo}}</h3>
 
         </div>
@@ -223,10 +232,11 @@
 
         <!-- Contenido -->
         <div class="content">
-            <h2>{{des}}</h2>
+            <h2 class="!w-full text-2xl !font-bold !text-blue-600 uppercase tracking-wider mb-1 !text-center">
+                {{des}}</h2>
             <p></p>
 
-            <span class="price-tag">{{price1f}}</span>
+            <p class="price-tag">$ {{precio1f}}</p>
 
             <!-- Controles de Cantidad -->
             <div class="quantity-wrapper">
@@ -262,14 +272,11 @@
 
         // Lógica para cerrar la tarjeta con animación
         function closeCard() {
-            const card = document.getElementById('product-card');
-            window.close()
-            card.classList.add('fade-out');
-            setTimeout(() => {
-                card.style.display = 'none';
-            }, 300);
-
+            console.log("funcion closeCard");
+            window.history.back();
+            //window.close(); // Cierra la ventana actual
         }
+
     </script>
 
 </body>

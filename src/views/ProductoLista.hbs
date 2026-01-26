@@ -67,7 +67,7 @@
                 let parametros = `scrollbars=no,resizable=no,url=no,strWindowFeatures=no,location=no,toolbar=no,menubar=no,status=no,width=800px,height=900px`;
                 url = '/producto_detalle/' + id_producto;
 
-                window.open(url, 'full-modal', parametros);
+                window.open(url, '_self', parametros);
             });
         });
     </script>
@@ -162,14 +162,12 @@
                     Swal.fire({
                         icon: 'error', title: 'Oops...', text: 'El producto debe ser mayor a 0',
                         showConfirmButton: false, timer: 2000
-                    }) var str = 0; var unidad = 0;
+                    })
+                     var str = 0;
+                     var unidad = 0;
                 } if (tipo == 'kilo.') {
-                    str = parseFloat(str -
-                        1).toFixed(0); // cantidad total_item=parseFloat(price * str * unidad).toFixed(0); } else { str=parseFloat(str -
-        unidad).toFixed(0); // cantidad total_item=parseFloat(price * str).toFixed(0); } //var
-            total_item = parseFloat(price * str * unidad).toFixed(2); $("#cantidad_" + id).val(str); $("#total_" +
-                id).val(total_item);
-        }); $('.sumacanasto').on('click', function (e) {
+            str = parseFloat(str - 1).toFixed(0); // cantidad total_item=parseFloat(price * str * unidad).toFixed(0); } else { str=parseFloat(str -        unidad).toFixed(0); // cantidad total_item=parseFloat(price * str).toFixed(0); } //var
+            total_item = parseFloat(price * str * unidad).toFixed(2); $("#cantidad_" + id).val(str); $("#total_" + id).val(total_item)}); $('.sumacanasto').on('click', function (e) {
             console.log('agregar carrito');
             console.log(e.target); var id = (e.target.value), cant = parseFloat($("#cantidad_" + id).val());
             console.log($("#tipo_" + id).val()); // var stotal=parseFloat($("#total_" + id).val()); const infoProducto={ id:
