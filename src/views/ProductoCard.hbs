@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card de Producto Pro 2026</title>
+    <!-- Fuente moderna desde Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --primary: #111827;
+            --accent: #2563eb;
+            --danger: #ef4444;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --radius: 24px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Contenedor de la Tarjeta */
+        .card {
+            background: var(--bg-card);
+            width: calc(100vw - 50px);
+            padding: 24px;
+            border-radius: var(--radius);
+            position: relative;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            height: calc(100vh - 50px);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Botón de Cerrar Superior */
+        .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* Imagen del Producto */
+        .image-container {
+            width: 65%;
+            height: 400px;
+            /* Ajusta esta altura según tu diseño */
+            border-radius: 18px;
+            overflow: hidden;
+            margin: 0 auto 20px auto;
+            /* "0 auto" centra el contenedor mismo horizontalmente */
+            background: #var(--bg-card);
+
+            /* Centrado de la imagen */
+            display: flex;
+            justify-content: center;
+            /* Centrado horizontal */
+            align-items: center;
+            /* Centrado vertical */
+        }
+
+        .image-container img {
+            width: 85%;
+            height: 85%;
+            object-fit: contain;
+            /* Cambiado a 'contain' para que la imagen no se corte al ser 85% */
+        }
+
+        /* Información */
+        .content h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        .content p {
+            margin: 0 0 20px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* Controles de Cantidad Agrandados */
+        .quantity-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f3f4f6;
+            padding: 8px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn-qty {
+            width: 50px;
+            /* Tamaño optimizado para 2026 */
+            height: 50px;
+            border: none;
+            background: white;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .btn-qty:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-qty:active {
+            transform: scale(0.9);
+        }
+
+        #qty-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Botón Agregar al Carrito */
+        .btn-add {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-add:hover {
+            background: var(--accent);
+        }
+
+        .btn-add svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Animación de salida */
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+   {{#each card}}
+    <article class="card" id="product-card">
+        <div>
+            <h3 class="text-2xl font-bold text-blue-600 uppercase tracking-wider mb-1 text-center">
+                {{titulo}}</h3>
+
+        </div>
+        <!-- Botón Cerrar -->
+        <button class="close-btn" onclick="closeCard()" aria-label="Cerrar">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
+        <!-- Imagen -->
+        <div class="image-container">
+            <img src="{{foto2}}" alt="Headphones">
+        </div>
+
+        <!-- Contenido -->
+        <div class="content">
+            <h2>{{des}}</h2>
+            <p></p>
+
+            <span class="price-tag">{{price1f}}</span>
+
+            <!-- Controles de Cantidad -->
+            <div class="quantity-wrapper">
+                <button class="btn-qty" onclick="updateQty(-1)">−</button>
+                <span id="qty-value">1</span>
+                <button class="btn-qty" onclick="updateQty(1)">+</button>
+            </div>
+
+            <!-- Botón de Acción -->
+            <button class="btn-add">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
+                </svg>
+                Agregar al carrito
+            </button>
+            <p>{{nota}}</p>
+        </div>
+        {{/each}}
+    </article>
+
+    <script>
+        // Lógica de Cantidad
+        let quantity = 1;
+        const qtyDisplay = document.getElementById('qty-value');
+
+        function updateQty(value) {
+            quantity += value;
+            if (quantity < 1) quantity = 1;
+            qtyDisplay.innerText = quantity;
+        }
+
+        // Lógica para cerrar la tarjeta con animación
+        function closeCard() {
+            const card = document.getElementById('product-card');
+            window.close()
+            card.classList.add('fade-out');
+            setTimeout(() => {
+                card.style.display = 'none';
+            }, 300);
+
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,157 +1,182 @@
-import express from 'express';
-import multer from 'multer';
+import express from "express";
+import multer from "multer";
 import nodemailer from "nodemailer";
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import 'dotenv/config';
+import "dotenv/config";
 
 // Environment variables are now available
 console.log(process.env.MAIL_PORT);
-console.log(process.env.AWS_ACCESS_KEY_ID)
+console.log(process.env.AWS_ACCESS_KEY_ID);
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com", // Para pruebas, usa ethereal.email
   port: 587,
   secure: false, // true para puerto 465, false para otros puertos como 587
   auth: {
     user: process.env.MAIL_USER, // Tu usuario de mail
-    pass: process.env.MAIL_PASS // Tu password de mail
-  }
+    pass: process.env.MAIL_PASS, // Tu password de mail
+  },
 });
-console.log("transporter",transporter);
-
+console.log("transporter", transporter);
 
 import { S3Client, ListBucketsCommand } from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
-import AWS from 'aws-sdk';
+import AWS from "aws-sdk";
 
 //const multerS3 = require ('multer-s3');
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
 const storage = multer.diskStorage({
   //destination: path.join(__dirname, '../public/img'),
-  destination: path.join(__dirname, '../public/img'),
+  destination: path.join(__dirname, "../public/img"),
   filename: (req, file, cb) => {
     cb(null, file.originalname);
-  }
-})
-
-
-
+  },
+});
 
 //const fs = require('fs');
 
 const router = express.Router();
 
-import pool from '../database.js';
+import pool from "../database.js";
 
-import passport from 'passport';
+import passport from "passport";
 //import { isLoggedIn } from '../lib/auth.js';
 //import { CostExplorer } from 'aws-sdk';
-import { Console } from 'console';
+import { Console } from "console";
 //import { eventNames } from 'process';
 
-import routes from './router.js';
+import routes from "./router.js";
 // SIGNUP
-router.get('/signup', (req, res) => {
-  res.render('auth/signup');
+router.get("/signup", (req, res) => {
+  res.render("auth/signup");
 });
 
-router.post('/signup', passport.authenticate('local.signup', {
-  successRedirect: '/profile',
-  failureRedirect: '/signup',
-  failureFlash: true
-}));
+router.post(
+  "/signup",
+  passport.authenticate("local.signup", {
+    successRedirect: "/profile",
+    failureRedirect: "/signup",
+    failureFlash: true,
+  })
+);
 
 // ingreso
-router.get('/signin', (req, res) => {
-  res.render('auth/signin');
+router.get("/signin", (req, res) => {
+  res.render("auth/signin");
 });
 
-router.post('/signin', (req, res, next) => {
-  console.log('pulso');
-  req.check('username', 'Username is Required').notEmpty();
-  req.check('password', 'Password is Required').notEmpty();
+router.post("/signin", (req, res, next) => {
+  console.log("pulso");
+  req.check("username", "Username is Required").notEmpty();
+  req.check("password", "Password is Required").notEmpty();
   const errors = req.validationErrors();
   if (errors.length > 0) {
-    req.flash('message', errors[0].msg);
-    res.redirect('/signin');
+    req.flash("message", errors[0].msg);
+    res.redirect("/signin");
   }
-  passport.authenticate('local.signin', {
-    successRedirect: '/profile',
-    failureRedirect: '/signin',
-    failureFlash: true
+  passport.authenticate("local.signin", {
+    successRedirect: "/profile",
+    failureRedirect: "/signin",
+    failureFlash: true,
   })(req, res, next);
 });
 
-router.get('/logout', (req, res) => {
+router.get("/logout", (req, res) => {
   req.logOut();
-  res.redirect('/');
+  res.redirect("/");
 });
 
 //router.get('/profile', isLoggedIn, (req, res) => {
 //import * as auth from './lib/auth.js';
 
-router.get('/profile', (req, res) => {
-  res.render('profile');
+router.get("/profile", (req, res) => {
+  res.render("profile");
 });
 
-router.get('/productocambia', async (req, res) => {
-  console.log('authentication listado producto');
-  const data = await pool.query('SELECT id_producto,orden,id_categoria,id_subcategoria,des,costo,precio2,precio1,tipoventa,foto2,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
+router.get("/productocambia", async (req, res) => {
+  console.log("authentication listado producto");
+  const data = await pool.query(
+    "SELECT id_producto,orden,id_categoria,id_subcategoria,des,costo,precio2,precio1,tipoventa,foto2,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
 });
 
-router.get('/productomayor', async (req, res) => {
-  console.log('authentication listado producto');
-  const data = await pool.query('SELECT id_producto,orden,id_categoria,id_subcategoria,des,costo,precio2,precio1,tipoventa,foto2,visible,vermayor FROM producto WHERE visible=1 and vermayor=1 ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productomayor', { data });
+router.get("/productomayor", async (req, res) => {
+  console.log("authentication listado producto");
+  const data = await pool.query(
+    "SELECT id_producto,orden,id_categoria,id_subcategoria,des,costo,precio2,precio1,tipoventa,foto2,visible,vermayor FROM producto WHERE visible=1 and vermayor=1 ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productomayor", { data });
 });
 
-router.get('/detallecompra/:id', async (req, res) => {
-  console.log('detalle de compra');
+router.get("/detallecompra/:id", async (req, res) => {
+  console.log("detalle de compra");
   console.log("req", req);
   //const id = req.user.id;
   //console.log("req",req);
   //console.log("res",res);
-  const data = await pool.query("SELECT id, compradetalle.id_compra as nro, DATE_FORMAT(compradetalle.fecha,'%y/%m/%d') as fecha, c.id_prov, p.razonsocial as proveedor, compradetalle.id_producto, des, cant, costo, mayor, final, ref FROM compradetalle INNER JOIN compra c ON c.id_compra = compradetalle.id_compra INNER JOIN proveedor p ON p.id_prov = c.id_prov WHERE id_producto = ? order by fecha desc", [req.params.id]);
+  const data = await pool.query(
+    "SELECT id, compradetalle.id_compra as nro, DATE_FORMAT(compradetalle.fecha,'%y/%m/%d') as fecha, c.id_prov, p.razonsocial as proveedor, compradetalle.id_producto, des, cant, costo, mayor, final, ref FROM compradetalle INNER JOIN compra c ON c.id_compra = compradetalle.id_compra INNER JOIN proveedor p ON p.id_prov = c.id_prov WHERE id_producto = ? order by fecha desc",
+    [req.params.id]
+  );
 
   //SELECT id, id_compra, DATE_FORMAT(fecha,'%y/%m/%d') as fecha, id_producto, des, cant, costo, mayor, final, ref FROM compradetalle WHERE id_producto = ? order by fecha desc", [req.params.id]);
-  res.render('detallecomprapantalla', { data });
+  res.render("detallecomprapantalla", { data });
 });
 
-router.get('/imprime_autentication', async (req, res) => {
-  const { combo_prov, fecha, condicion, articulos, total, largo, cliente } = req.body;
+router.get("/imprime_autentication", async (req, res) => {
+  const {
+    combo_prov,
+    fecha,
+    condicion,
+    articulos,
+    total,
+    largo,
+    cliente,
+  } = req.body;
   console.log("procesar venta");
-  console.log("vendedor :", combo_prov,
-    "fecha :  ", fecha,
-    "total :", total,
-    "largo :", largo,
-    "cliente : ", cliente)
+  console.log(
+    "vendedor :",
+    combo_prov,
+    "fecha :  ",
+    fecha,
+    "total :",
+    total,
+    "largo :",
+    largo,
+    "cliente : ",
+    cliente
+  );
   //console.log("articulos :", articulos);
   //console.log(ee)
 
-  console.log('imprime_autentication');
+  console.log("imprime_autentication");
   console.log("req", req);
 
-  const data = await pool.query("SELECT id, id_venta, DATE_FORMAT(fecha,'%y/%m/%d') as fecha, id_producto, des, cant, precio_unit, venta FROM ventadetalle WHERE id_producto = ? order by fecha desc", [req.params.id]);
-  console.log("data", data)
-  res.render('ticket', { data, req });
+  const data = await pool.query(
+    "SELECT id, id_venta, DATE_FORMAT(fecha,'%y/%m/%d') as fecha, id_producto, des, cant, precio_unit, venta FROM ventadetalle WHERE id_producto = ? order by fecha desc",
+    [req.params.id]
+  );
+  console.log("data", data);
+  res.render("ticket", { data, req });
 });
 
-
-router.get('/productocompra', async (req, res) => {
-  console.log('authentication /productocompra');
-  const produ = await pool.query("SELECT id_producto,orden,id_categoria,id_subcategoria,des,precio1,tipoventa,foto2,visible,costo,DATE_FORMAT(fecha,'%d/%m/%y') as fecha,precio2,porcprecio1,porcprecio2, stock FROM producto ORDER BY id_categoria,id_subcategoria,orden");
+router.get("/productocompra", async (req, res) => {
+  console.log("authentication /productocompra");
+  const produ = await pool.query(
+    "SELECT id_producto,orden,id_categoria,id_subcategoria,des,precio1,tipoventa,foto2,visible,costo,DATE_FORMAT(fecha,'%d/%m/%y') as fecha,precio2,porcprecio1,porcprecio2, stock FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
   const prov = await pool.query("SELECT * FROM proveedor");
-  res.render('productocompra', { produ, prov });
+  res.render("productocompra", { produ, prov });
 });
 
 /*router.get('/productoventa', async (req, res) => {
@@ -171,36 +196,33 @@ router.get('/productoventamayor', async (req, res) => {
 });
 */
 
-router.get('/sube_archivo', async (req, res) => {
-  console.log('sube archivo');
-  //const data = await pool.query('SELECT id_producto,orden,id_categoria,id_subcategoria,des,precio1,tipoventa,foto2 FROM producto ORDER BY id_categoria,id_subcategoria,orden');  
-  res.render('sube_archivo');
+router.get("/sube_archivo", async (req, res) => {
+  console.log("sube archivo");
+  //const data = await pool.query('SELECT id_producto,orden,id_categoria,id_subcategoria,des,precio1,tipoventa,foto2 FROM producto ORDER BY id_categoria,id_subcategoria,orden');
+  res.render("sube_archivo");
 });
 
-router.get('/pedidos', async (req, res) => {
-  console.log('autentication /pedidos');
+router.get("/pedidos", async (req, res) => {
+  console.log("autentication /pedidos");
   //le mando id_users de req
   const id_users = req.user.id_users;
   console.dir(req.user.id_users);
   console.log(id_users);
-  const ped = await pool.query('SELECT * FROM pedido WHERE id_users = ?', id_users);
-  console.log('despues del listado')
+  const ped = await pool.query(
+    "SELECT * FROM pedido WHERE id_users = ?",
+    id_users
+  );
+  console.log("despues del listado");
   console.log(ped);
-  res.render('pedidos', { ped });
+  res.render("pedidos", { ped });
   //res.redirect('/pedidos/list');
 });
 
-
-
 //    listado decarrito de compras
-router.get('/carritobarra', async (req, res) => {
-
-
+router.get("/carritobarra", async (req, res) => {
   console.log(res.lis);
 
-
-  res.render('carrito2');   // pasar pro a carritoadd
-
+  res.render("carrito2"); // pasar pro a carritoadd
 });
 
 /*function obtenerProductosLocalStorage() {
@@ -221,21 +243,19 @@ router.get('/carritobarra', async (req, res) => {
 }
 */
 
+router.get("/verproducto/:id", async (req, res) => {
+  console.log("verproducto");
 
+  //const id_users = req.user.id_users;
 
+  const pro = await pool.query(
+    "SELECT id_producto,des,precio1,tipoventa,foto2,nota FROM producto WHERE id_producto = ? ",
+    [req.params.id]
+  );
 
-router.get('/verproducto/:id', async (req, res) => {
-  console.log('verproducto');
-
-  //const id_users = req.user.id_users;  
-
-
-  const pro = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,nota FROM producto WHERE id_producto = ? ', [req.params.id]);
-
-  console.log(pro)
-  res.render('verproducto', { pro });   // pasar pro a carritoadd
+  console.log(pro);
+  res.render("verproducto", { pro }); // pasar pro a carritoadd
 });
-
 
 /*
 router.get('/productoedit/:id', async (req, res) => {
@@ -260,61 +280,80 @@ router.get('/productoedit/:id', async (req, res) => {
 //res.render('productoedit', { pro, cat });
 //});
 
+router.get("/modificarproducto/:id", async (req, res) => {
+  console.log("modificarproducto");
+  const pro = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [
+    req.params.id,
+  ]);
 
-
-
-router.get('/modificarproducto/:id', async (req, res) => {
-
-  console.log('modificarproducto');
-  const pro = await pool.query('SELECT * FROM producto WHERE id_producto = ?', [req.params.id]);
-
-
-  const cat = await pool.query("SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto FROM categoria c, producto p where p.id_producto=?", [req.params.id]);
+  const cat = await pool.query(
+    "SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto FROM categoria c, producto p where p.id_producto=?",
+    [req.params.id]
+  );
 
   //const cat = await pool.query("SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto  FROM categoria c, producto p ");
 
-  const subcat = await pool.query("SELECT d.id_categoria, d.id_subcategoria, d.des, IF(p.id_subcategoria=d.id_subcategoria, 'S', '')  id_subcategoria_producto FROM subcategoria d, producto p where p.id_producto=?", [req.params.id]);
-  console.log('subcategoria ', subcat)
-  res.render('modificarproducto', { pro, cat, subcat });
+  const subcat = await pool.query(
+    "SELECT d.id_categoria, d.id_subcategoria, d.des, IF(p.id_subcategoria=d.id_subcategoria, 'S', '')  id_subcategoria_producto FROM subcategoria d, producto p where p.id_producto=?",
+    [req.params.id]
+  );
+  console.log("subcategoria ", subcat);
+  res.render("modificarproducto", { pro, cat, subcat });
 });
 
-
-
-
-router.get('/tildar/:id', async (req, res) => {
+router.get("/tildar/:id", async (req, res) => {
   const { id } = req.params;
-  console.log('tildar');
-  const pro = await pool.query('update producto set visible=1 where id_producto = ?', [id]);
-  const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
+  console.log("tildar");
+  const pro = await pool.query(
+    "update producto set visible=1 where id_producto = ?",
+    [id]
+  );
+  const data = await pool.query(
+    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
 });
 
-router.get('/destildar/:id', async (req, res) => {
+router.get("/destildar/:id", async (req, res) => {
   const { id } = req.params;
-  console.log('destildar');
-  const pro = await pool.query('update producto set visible=0 where id_producto = ?', [id]);
-  const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
+  console.log("destildar");
+  const pro = await pool.query(
+    "update producto set visible=0 where id_producto = ?",
+    [id]
+  );
+  const data = await pool.query(
+    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
 });
 
-router.get('/tildarmayor/:id', async (req, res) => {
+router.get("/tildarmayor/:id", async (req, res) => {
   const { id } = req.params;
-  console.log('tildar');
-  const pro = await pool.query('update producto set vermayor=1 where id_producto = ?', [id]);
-  const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
+  console.log("tildar");
+  const pro = await pool.query(
+    "update producto set vermayor=1 where id_producto = ?",
+    [id]
+  );
+  const data = await pool.query(
+    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
 });
 
-router.get('/destildarmayor/:id', async (req, res) => {
+router.get("/destildarmayor/:id", async (req, res) => {
   const { id } = req.params;
-  console.log('destildar');
-  const pro = await pool.query('update producto set vermayor=0 where id_producto = ?', [id]);
-  const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
+  console.log("destildar");
+  const pro = await pool.query(
+    "update producto set vermayor=0 where id_producto = ?",
+    [id]
+  );
+  const data = await pool.query(
+    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
 });
 
-
-router.post('/productomodi/:id', async (req, res) => {
+router.post("/productomodi/:id", async (req, res) => {
   const { id } = req.params;
   const { id_categoria } = req.body;
   console.log(req.params);
@@ -322,43 +361,40 @@ router.post('/productomodi/:id', async (req, res) => {
   console.log(id);
   console.log("id_categoria :", id_categoria);
   if (id_categoria > "1") {
-
     const newProducto = req.body;
 
-    const des = newProducto.des    // newProducto lo tomo del body
+    const des = newProducto.des; // newProducto lo tomo del body
     console.log("new producto :");
     console.dir(newProducto);
     //req.getConnection((err, conn) => {
-    const pro = await pool.query('UPDATE producto set ? WHERE id_producto = ?', [newProducto, id]);
+    const pro = await pool.query(
+      "UPDATE producto set ? WHERE id_producto = ?",
+      [newProducto, id]
+    );
     //console.log(pro);
 
     //UPDATE `producto` SET `des` = 'Queso Mar Del Plata' WHERE `producto`.`id_producto` = 1;
     console.log("grabo");
-  }
-  else {
+  } else {
     console.log("no grabo");
   }
-  const data = await pool.query('SELECT * FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
-}
-);
+  const data = await pool.query(
+    "SELECT * FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
+});
 
-
-
-
-
-
-router.get('/agregaCarrito/:id', async (req, res) => {
-  console.log('agrega carrito');
+router.get("/agregaCarrito/:id", async (req, res) => {
+  console.log("agrega carrito");
 
   const id_users = req.user.id_users;
 
+  const pro = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [
+    req.params.id,
+  ]);
 
-  const pro = await pool.query('SELECT * FROM producto WHERE id_producto = ?', [req.params.id]);
-
-  console.log(pro)
-  res.render('carritoAdd', { pro });   // pasar pro a carritoadd
-
+  console.log(pro);
+  res.render("carritoAdd", { pro }); // pasar pro a carritoadd
 
   /*
   var sql = 'INSERT into carrito (id_users,id_producto,cant) VALUES (12,1,500)';
@@ -379,114 +415,158 @@ router.get('/agregaCarrito/:id', async (req, res) => {
 */
 });
 
-router.get('/productonuevo', async (req, res) => {
+router.get("/productonuevo", async (req, res) => {
+  console.log("prouctonuevo");
 
-  console.log('prouctonuevo');
+  const cat = await pool.query(
+    "SELECT c.id_categoria, c.des FROM categoria c",
+    [req.params.id]
+  );
 
-
-  const cat = await pool.query("SELECT c.id_categoria, c.des FROM categoria c", [req.params.id]);
-
-  const subcat = await pool.query("SELECT sc.id_categoria, sc.id_subcategoria, sc.des FROM subcategoria sc");
-  console.log('subcategoria ', subcat)
-  res.render('productonuevo', { cat, subcat });
+  const subcat = await pool.query(
+    "SELECT sc.id_categoria, sc.id_subcategoria, sc.des FROM subcategoria sc"
+  );
+  console.log("subcategoria ", subcat);
+  res.render("productonuevo", { cat, subcat });
 });
 
-router.post('/producto_nuevo_graba', async (req, res) => {
-  const { orden, id_categoria, tipoventa, unidad, id_subcategoria, des, nota, precio1, visible } = req.body;
+router.post("/producto_nuevo_graba", async (req, res) => {
+  const {
+    orden,
+    id_categoria,
+    tipoventa,
+    unidad,
+    id_subcategoria,
+    des,
+    nota,
+    precio1,
+    visible,
+  } = req.body;
   //const { id } = req.params;
   console.dir(req.body);
-  console.log('producto_nuevo_graba');
+  console.log("producto_nuevo_graba");
   // console.dir(id);
   const newProducto = req.body;
-  const result = await pool.query('INSERT INTO producto SET ? ', newProducto);
-  console.dir('resultado', result.insertId);
+  const result = await pool.query("INSERT INTO producto SET ? ", newProducto);
+  console.dir("resultado", result.insertId);
   // console.log('errores',err);
   if (result.insertId < 1) {
-    console.log('error :');
+    console.log("error :");
     Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'No se pudo agregar el producto',
+      icon: "error",
+      title: "Oops...",
+      text: "No se pudo agregar el producto",
       showConfirmButton: false,
-      timer: 5000
-    })
+      timer: 5000,
+    });
 
-    res.render('productocambia');
+    res.render("productocambia");
   } else {
-
     console.log("prioducto creado");
     //res.status(200).jsonp(req.body);
     //const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible FROM producto ORDER BY id_categoria,id_subcategoria,orden');
     //console.dir({ data });
     //window.location = "/productocambia";
-    res.render('productocambia');
+    res.render("productocambia");
   }
-
 });
 
-router.get('/productodel/:id', async (req, res) => {
+router.get("/productodel/:id", async (req, res) => {
   const { id } = req.params;
-  console.log('delete', id);
-  await pool.query('DELETE FROM producto WHERE id_producto = ?', [id]);
-  req.flash('success', 'Link Removed Successfully');
-  const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible FROM producto ORDER BY id_categoria,id_subcategoria,orden');
-  res.render('productocambia', { data });
+  console.log("delete", id);
+  await pool.query("DELETE FROM producto WHERE id_producto = ?", [id]);
+  req.flash("success", "Link Removed Successfully");
+  const data = await pool.query(
+    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  );
+  res.render("productocambia", { data });
 });
-
-
 
 // listado de productos
-router.get('/producto/:id', async (req, res) => {
+router.get("/producto/:id", async (req, res) => {
   console.dir(req.params.id);
-  console.log('authentication listado producto');
-  if ([req.params.id] == 'todos') {
-    const cat = 'Todos los productos';
-    const [pro] = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
-    res.render('producto_dos', { pro, cat });
-  }
-  else {
-    const [pro] = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
-    const mivar ="jesus";
-    console.log("productos ",pro)
-    res.render('producto_tres', { pro, mivar })  // pasar pro a carritoadd
+  console.log("authentication listado producto");
+  if ([req.params.id] == "todos") {
+    const cat = "Todos los productos";
+    const [
+      pro,
+    ] = await pool.query(
+      "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden",
+      [req.params.id]
+    );
+    res.render("ProductoLista", { pro, cat });
+  } else {
+    const [
+      pro,
+    ] = await pool.query(
+      "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,FORMAT(precio1,'N0') as precio1f ,tipoventa,foto2,nota,FORMAT(precio1 * 1.1, 'N0') as precio1_10p FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden",
+      [req.params.id]
+    );
+    console.log("productos ", pro);
+    res.render("ProductoLista", { pro }); // pasar pro a carritoadd
   }
 });
 
+router.get("/producto_detalle/:id", async (req, res) => {
+  console.log("entro producto_detalle", [req.params.id]);
+ console.log("parametros", [req.params.parametros]); 
+  var consulta = "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_producto ="+ [req.params.id]
+  console.log("consulta", consulta);
+  try {
+    const [ card ] = await pool.query(consulta);
+   
+    console.log("producto detalle ", card);
 
-router.get('/listatarjeta/:id', async (req, res) => {
-  console.log('prodxcat');
+    res.render('ProductoCard', {  card, layout: false });
+    
+  } catch (error) {
+    {
+      console.log(error);
+    }
+  }
+});
+
+router.get("/listatarjeta/:id", async (req, res) => {
+  console.log("prodxcat");
   console.dir(req.params.id);
 
-  if ([req.params.id] == 'todos') {
-    const cat = 'Todos los productos';
-    const pro = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
-    res.render('listatarjeta', { pro, cat });
+  if ([req.params.id] == "todos") {
+    const cat = "Todos los productos";
+    const pro = await pool.query(
+      "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden",
+      [req.params.id]
+    );
+    res.render("listatarjeta", { pro, cat });
     /*const data = await pool.query('SELECT id_categoria,id_subcategoria,orden,id_producto,des,precio1,tipoventa,foto2 FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden');   
     res.render('producto', {data}); 
     */
-  }
-  else {
-    const cat = await pool.query("SELECT id_categoria,des FROM categoria WHERE id_categoria = ?", [req.params.id]);
+  } else {
+    const cat = await pool.query(
+      "SELECT id_categoria,des FROM categoria WHERE id_categoria = ?",
+      [req.params.id]
+    );
     console.log({ cat });
-    const pro = await pool.query("SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden", [req.params.id]);
-    res.render('listatarjeta', { pro, cat });   // pasar pro a carritoadd
+    const pro = await pool.query(
+      "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,des,precio1,tipoventa,foto2,nota FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden",
+      [req.params.id]
+    );
+    res.render("listatarjeta", { pro, cat }); // pasar pro a carritoadd
     // const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2 FROM producto WHERE id_categoria = ?', [req.params.id]);
-    // res.render('producto', {data}); 
+    // res.render('producto', {data});
   }
-
 });
 
 //    subir archivos
 
 const uploadImage = multer({
   storage,
-  limits: { fileSize: 1000000 }
-}).single('image');
+  limits: { fileSize: 1000000 },
+}).single("image");
 
-router.get('/images', (req, res) => { });
+router.get("/images", (req, res) => {});
 
-router.post('/images/upload', async (req, res) => {
-  console.log("/images/upload")
+router.post("/images/upload", async (req, res) => {
+  console.log("/images/upload");
   const { image } = req.body;
   console.dir(image);
   s3.listBuckets({}, (err, data) => {
@@ -495,52 +575,68 @@ router.post('/images/upload', async (req, res) => {
   });
   //res.send('uploaded');
   var image2 = /*"C:/sistema_carrito/" +*/ image;
-  console.log(" image2 ",image2);
+  console.log(" image2 ", image2);
   fs.readFile(image2, (err, data) => {
     if (err) throw err;
     var parametrosPutObject = {
-      Bucket: 'losrosales-fileserver/img',
+      Bucket: "losrosales-fileserver/img",
       Key: image,
       Body: data,
-      ACL: 'public-read'
-    }
+      ACL: "public-read",
+    };
     s3.putObject(parametrosPutObject, (err, data) => {
       if (err) throw err;
       console.log(data);
-    })
+    });
   });
-  res.render('sube_archivo');
+  res.render("sube_archivo");
 });
 
-router.get('/images', (req, res) => { });
+router.get("/images", (req, res) => {});
 
-
-
-
-
-
-
-
-
-router.post('/send-email', async (req, res) => {
-  console.log('send email');
-  const { cliente, correo, cel, direccion, localidad, message, cant, desc, prec, prod_id, tipo, unid, sttl, enviostr, total, totalgralstr, nota, articulos, fecha, horalocal, } = req.body;
-  console.log("clinte : ", cliente)
+router.post("/send-email", async (req, res) => {
+  console.log("send email");
+  const {
+    cliente,
+    correo,
+    cel,
+    direccion,
+    localidad,
+    message,
+    cant,
+    desc,
+    prec,
+    prod_id,
+    tipo,
+    unid,
+    sttl,
+    enviostr,
+    total,
+    totalgralstr,
+    nota,
+    articulos,
+    fecha,
+    horalocal,
+  } = req.body;
+  console.log("clinte : ", cliente);
   var mfecha = fecha;
-  console.log('/send-email');
+  console.log("/send-email");
   console.log("localidad :", localidad);
-  var cliente_des = cliente
-  var cliente_tel = cel
-  var cliente_dir = direccion
-  var cliente_saldoAnt = 0
-  var cliente_cod = await Actuali_Cliente(cel, cliente, direccion, localidad, correo)
+  var cliente_des = cliente;
+  var cliente_tel = cel;
+  var cliente_dir = direccion;
+  var cliente_saldoAnt = 0;
+  var cliente_cod = await Actuali_Cliente(
+    cel,
+    cliente,
+    direccion,
+    localidad,
+    correo
+  );
   console.log("codigo de cliente:", cliente_cod);
 
-
-
-
   console.log("total: ", total);
-  const total2 = Math.trunc(total)
+  const total2 = Math.trunc(total);
   console.log("total2: ", total2);
   const enviostr2 = Math.trunc(enviostr);
   const totalgralstr2 = Math.trunc(totalgralstr);
@@ -553,15 +649,12 @@ router.post('/send-email', async (req, res) => {
 
   console.log("totagralstr: ", totalgralstr2);
 
-  const hoy = fecha + "  " + horalocal
+  const hoy = fecha + "  " + horalocal;
 
   console.log(hoy);
   // cargo el pedido en base de datos
 
-
   var producto = [];
-
-
 
   var encabezado = ``,
     cuerpo = ``,
@@ -604,10 +697,12 @@ router.post('/send-email', async (req, res) => {
   if (articulos > 1) {
     for (let i = 0; i < cant.length; i++) {
       console.log(desc[i]);
-      producto.push([cant[i], desc[i], prec[i], sttl[i], prod_id[i]])
+      producto.push([cant[i], desc[i], prec[i], sttl[i], prod_id[i]]);
     }
     for (let i = 0; i < producto.length; i++) {
-      cuerpo = cuerpo + `<tr>
+      cuerpo =
+        cuerpo +
+        `<tr>
             <td class="text-right" style="text-align:right" ;>
               <a type="text"  name="cant" hidden=true>${producto[i][0]}&#09;</a></td>
             <td>
@@ -617,11 +712,11 @@ router.post('/send-email', async (req, res) => {
             <td class="text-right" id='subtotales' style="text-align:right">
               <a type="text" name="sttl" style="text-align:right" text hidden=true>${producto[i][3]}&#09;</a></td>
         </tr>`;
-
     }
-  }
-  else {
-    cuerpo = cuerpo + `<tr>
+  } else {
+    cuerpo =
+      cuerpo +
+      `<tr>
         <td class="text-right" style="text-align:right" ;>
           <a type="text"  name="cant" hidden=true>${cant} </a></td>
         <td>
@@ -631,11 +726,7 @@ router.post('/send-email', async (req, res) => {
         <td class="text-right" id='subtotales' style="text-align:right">
           <a type="text" name="sttl" style="text-align:right" text hidden=true>${sttl}</a></td>
         </tr>`;
-
   }
-
-
-
 
   pie = `
 
@@ -670,7 +761,6 @@ router.post('/send-email', async (req, res) => {
 
   const contentHTML = encabezado + cuerpo + pie;
 
-  
   const mailOptions = {
     from: "rosalesjimport@gmail.com",
     cc: "rosalesjimport@gmail.com",
@@ -688,85 +778,82 @@ router.post('/send-email', async (req, res) => {
     producto, prod_id, desc, cant, prec, sttl)
 */
 
-
-  // envio el mail 
+  // envio el mail
 
   console.log("antes del send mail", mailOptions);
   var result = await transporter.sendMail(mailOptions); // le doy laorden para que lo mande
   console.log("despues del send mail", result);
-//  console.log(ppp)
+  //  console.log(ppp)
   if (!result) {
-    console.log('error :', result);
-    res.render('carrito2');
-  } 
-  else {
+    console.log("error :", result);
+    res.render("carrito2");
+  } else {
     console.log("Email enviado");
-    res.render('mailok');
-  };
-})
+    res.render("mailok");
+  }
+});
 
 //res.render('mailok');   //aca tambien vacio el localstorage
 
-router.post('/graba_cliente', async (req, res) => {
+router.post("/graba_cliente", async (req, res) => {
   const { cliente, correo, cel, direccion } = req.body;
-  const { orden, id_categoria, tipoventa, unidad, id_subcategoria, des, nota, precio1, visible } = req.body;
+  const {
+    orden,
+    id_categoria,
+    tipoventa,
+    unidad,
+    id_subcategoria,
+    des,
+    nota,
+    precio1,
+    visible,
+  } = req.body;
   //const { id } = req.params;
   console.dir(req.body);
-  console.log('graba cliente');
+  console.log("graba cliente");
   // console.dir(id);
   const newProducto = req.body;
-  const result = await pool.query('INSERT INTO producto SET ? ', newProducto);
-  console.dir('result', result.insertId);
+  const result = await pool.query("INSERT INTO producto SET ? ", newProducto);
+  console.dir("result", result.insertId);
   // console.log('errores',err);
   if (result.insertId < 1) {
-    console.log('error :');
+    console.log("error :");
     Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'No se pudo agregar el producto',
+      icon: "error",
+      title: "Oops...",
+      text: "No se pudo agregar el producto",
       showConfirmButton: false,
-      timer: 5000
-    })
+      timer: 5000,
+    });
 
-    res.render('productocambia');
+    res.render("productocambia");
   } else {
-
     console.log("prioducto creado");
     //res.status(200).jsonp(req.body);
     //const data = await pool.query('SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible FROM producto ORDER BY id_categoria,id_subcategoria,orden');
     //console.dir({ data });
     //window.location = "/productocambia";
-    res.render('productocambia');
+    res.render("productocambia");
   }
-
 });
 
-
-
-
-
-
-router.get('/mailok', async (req, res) => {
+router.get("/mailok", async (req, res) => {
   window.location = "mailok";
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-router.post('/procesar-compra', async (req, res) => {
+router.post("/procesar-compra", async (req, res) => {
   const { combo_prov, fecha, condicion, articulos, total, largo } = req.body;
   console.log("procesar compra");
-  console.log("proveedor :", combo_prov, "feha :  ", fecha, "total", total, "largo", largo)
+  console.log(
+    "proveedor :",
+    combo_prov,
+    "feha :  ",
+    fecha,
+    "total",
+    total,
+    "largo",
+    largo
+  );
   console.log("articulos :", articulos);
   const newProducto = req.body;
   console.dir(newProducto);
@@ -775,80 +862,153 @@ router.post('/procesar-compra', async (req, res) => {
   console.log("antes");
   ///console.log(eeee)
   const newCompra = req.body;
-  var lineadesql = "INSERT INTO compra values (NULL,'" + combo_prov + "', '" + fecha + "', '" + total + "')";
+  var lineadesql =
+    "INSERT INTO compra values (NULL,'" +
+    combo_prov +
+    "', '" +
+    fecha +
+    "', '" +
+    total +
+    "')";
   console.log("linea de compra", lineadesql);
   const result = await pool.query(lineadesql);
   var compra_nro = result.insertId;
   console.log("Compra cargada", compra_nro);
-  lineadesqldetalle = "INSERT INTO compradetalle values (NULL,'" + compra_nro + "','" + fecha + "', '";
+  lineadesqldetalle =
+    "INSERT INTO compradetalle values (NULL,'" +
+    compra_nro +
+    "','" +
+    fecha +
+    "', '";
   if (largo == 1) {
     console.log("una linea");
-    linea = lineadesqldetalle + newProducto.cod + "', '" +
-      newProducto.desc + "', '" +
-      newProducto.cant + "', '" +
-      newProducto.costo + "', '" +
-      newProducto.mayorista + "', '" +
-      newProducto.final + "', '" +
-      condicion + "')";
+    linea =
+      lineadesqldetalle +
+      newProducto.cod +
+      "', '" +
+      newProducto.desc +
+      "', '" +
+      newProducto.cant +
+      "', '" +
+      newProducto.costo +
+      "', '" +
+      newProducto.mayorista +
+      "', '" +
+      newProducto.final +
+      "', '" +
+      condicion +
+      "')";
     console.log("linea de detalle", linea);
     const result = await pool.query(linea);
-    lineadesqlproducto = "UPDATE producto SET costo='" + newProducto.costo +
-      "', precio2='" + newProducto.mayorista +
-      "', stock=stock+'" + newProducto.cant +
-      "', porcprecio2='" + newProducto.porcMayorista +
-      "', precio1='" + newProducto.final +
-      "', porcprecio1='" + newProducto.porcFinal +
+    lineadesqlproducto =
+      "UPDATE producto SET costo='" +
+      newProducto.costo +
+      "', precio2='" +
+      newProducto.mayorista +
+      "', stock=stock+'" +
+      newProducto.cant +
+      "', porcprecio2='" +
+      newProducto.porcMayorista +
+      "', precio1='" +
+      newProducto.final +
+      "', porcprecio1='" +
+      newProducto.porcFinal +
       "', visible='1" +
-      "', fecha='" + fecha + "' " +
-      "WHERE id_producto = " + newProducto.cod;
+      "', fecha='" +
+      fecha +
+      "' " +
+      "WHERE id_producto = " +
+      newProducto.cod;
     console.log("linea sql de producto", lineadesqlproducto);
     const resultado = await pool.query(lineadesqlproducto);
     //console.log(eventNames)
-  }
-  else {
+  } else {
     console.log("multiples linea");
     for (let i = 0; i < newProducto.cant.length; i++) {
-      linea = lineadesqldetalle + newProducto.cod[i] + "', '" +
-        newProducto.desc[i] + "', '" +
-        newProducto.cant[i] + "', '" +
-        newProducto.costo[i] + "', '" +
-        newProducto.mayorista[i] + "', '" +
-        newProducto.final[i] + "', '" +
-        condicion + "')";
-      console.log("linea :", linea)
+      linea =
+        lineadesqldetalle +
+        newProducto.cod[i] +
+        "', '" +
+        newProducto.desc[i] +
+        "', '" +
+        newProducto.cant[i] +
+        "', '" +
+        newProducto.costo[i] +
+        "', '" +
+        newProducto.mayorista[i] +
+        "', '" +
+        newProducto.final[i] +
+        "', '" +
+        condicion +
+        "')";
+      console.log("linea :", linea);
       const resultadodetalle = await pool.query(linea);
-      console.dir("result: ", resultadodetalle)
-      lineadesqlproducto = "UPDATE producto SET costo='" + newProducto.costo[i] +
-        "', precio2='" + newProducto.mayorista[i] +
-        "', stock=stock+'" + newProducto.cant[i] +
-        "', porcprecio2='" + newProducto.porcMayorista[i] +
-        "', precio1='" + newProducto.final[i] +
-        "', porcprecio1='" + newProducto.porcFinal[i] +
+      console.dir("result: ", resultadodetalle);
+      lineadesqlproducto =
+        "UPDATE producto SET costo='" +
+        newProducto.costo[i] +
+        "', precio2='" +
+        newProducto.mayorista[i] +
+        "', stock=stock+'" +
+        newProducto.cant[i] +
+        "', porcprecio2='" +
+        newProducto.porcMayorista[i] +
+        "', precio1='" +
+        newProducto.final[i] +
+        "', porcprecio1='" +
+        newProducto.porcFinal[i] +
         "', visible='1" +
-        "', fecha='" + fecha + "' " +
-        "WHERE id_producto = " + newProducto.cod[i];
+        "', fecha='" +
+        fecha +
+        "' " +
+        "WHERE id_producto = " +
+        newProducto.cod[i];
       console.log("linea sql de producto", lineadesqlproducto);
       const resultadoproducto = await pool.query(lineadesqlproducto);
     }
   }
   // res.render('mailok');
 
-  res.render('compra_ok');
+  res.render("compra_ok");
 });
 
-router.post('/procesar-venta', async (req, res) => {
-  const { combo_prov, fecha, horalocal, articulos, total, largo, cliente, condicion, pago, vuelto,trans } = req.body;
+router.post("/procesar-venta", async (req, res) => {
+  const {
+    combo_prov,
+    fecha,
+    horalocal,
+    articulos,
+    total,
+    largo,
+    cliente,
+    condicion,
+    pago,
+    vuelto,
+    trans,
+  } = req.body;
   console.log("procesar venta");
-  console.log("vendedor :", combo_prov,
-    "fecha :  ", fecha,
-    "hora : ", horalocal,
-    "total :", total,
-    "largo :", largo, 
-    "cliente : ", cliente,
-    "pago :", pago,
-    "vuelto :", vuelto,
-    "condicon :", condicion,
-    "trans :", trans)
+  console.log(
+    "vendedor :",
+    combo_prov,
+    "fecha :  ",
+    fecha,
+    "hora : ",
+    horalocal,
+    "total :",
+    total,
+    "largo :",
+    largo,
+    "cliente : ",
+    cliente,
+    "pago :",
+    pago,
+    "vuelto :",
+    vuelto,
+    "condicon :",
+    condicion,
+    "trans :",
+    trans
+  );
   console.log("articulos :", articulos);
   const newProducto = req.body;
   console.dir(newProducto);
@@ -856,9 +1016,14 @@ router.post('/procesar-venta', async (req, res) => {
   console.log("cant", newProducto.cant);
   console.log("antes");
   const newCompra = req.body;
-  console.log(newCompra)
-  const mfecha = fecha.substring(8, 10) + "-" + fecha.substring(5, 7) + "-" + fecha.substring(0, 4);
-  console.log("mfecha :", mfecha)
+  console.log(newCompra);
+  const mfecha =
+    fecha.substring(8, 10) +
+    "-" +
+    fecha.substring(5, 7) +
+    "-" +
+    fecha.substring(0, 4);
+  console.log("mfecha :", mfecha);
   /*
   today=new Date();
   h = ("00" + today.getHours()).substr(-2);
@@ -867,124 +1032,244 @@ router.post('/procesar-venta', async (req, res) => {
   const mhora = horalocal;
   console.log("hora:", mhora);
 
-  var lineadesql = "INSERT INTO venta values (NULL,'" + combo_prov + "', '" + fecha + "', '" + cliente + "', '" + total + "')";
+  var lineadesql =
+    "INSERT INTO venta values (NULL,'" +
+    combo_prov +
+    "', '" +
+    fecha +
+    "', '" +
+    cliente +
+    "', '" +
+    total +
+    "')";
   ///console.log(eeee)
   console.log("linea de venta", lineadesql);
   const result = await pool.query(lineadesql);
   var compra_nro = result.insertId;
   console.log("venta cargada", compra_nro);
-  lineadesqldetalle = "INSERT INTO ventadetalle values (NULL,'" + compra_nro + "','" + fecha + "', '";
+  lineadesqldetalle =
+    "INSERT INTO ventadetalle values (NULL,'" +
+    compra_nro +
+    "','" +
+    fecha +
+    "', '";
   if (largo == 1) {
     console.log("una linea");
-    linea = lineadesqldetalle + newProducto.cod + "', '" +
-      newProducto.desc + "', '" +
-      newProducto.cant + "', '" +
-      newProducto.costo + "', '" +
-      newProducto.subttl + "')";
+    linea =
+      lineadesqldetalle +
+      newProducto.cod +
+      "', '" +
+      newProducto.desc +
+      "', '" +
+      newProducto.cant +
+      "', '" +
+      newProducto.costo +
+      "', '" +
+      newProducto.subttl +
+      "')";
     console.log("linea de detalle", linea);
     const result = await pool.query(linea);
-  }
-  else {
+  } else {
     console.log("multiples linea");
     for (let i = 0; i < newProducto.cant.length; i++) {
-
-      linea = lineadesqldetalle + newProducto.cod[i] + "', '" +
-        newProducto.desc[i] + "', '" +
-        newProducto.cant[i] + "', '" +
-        newProducto.costo[i] + "', '" +
-        newProducto.subttl[i] + "')";
+      linea =
+        lineadesqldetalle +
+        newProducto.cod[i] +
+        "', '" +
+        newProducto.desc[i] +
+        "', '" +
+        newProducto.cant[i] +
+        "', '" +
+        newProducto.costo[i] +
+        "', '" +
+        newProducto.subttl[i] +
+        "')";
       console.log("linea de detalle de venta:", linea);
       console.log("codigo :", newProducto.cod[i]);
       console.log("desc :", newProducto.desc[i]);
       console.log("cant :", newProducto.cant[i]);
       console.log("costo :", newProducto.costo[i]);
-      console.log("linea :", linea)
+      console.log("linea :", linea);
       const resultadodetalle = await pool.query(linea);
-      console.dir("result: ", resultadodetalle)
+      console.dir("result: ", resultadodetalle);
     }
-
   }
-  console.log("compra nro : ", compra_nro)
-  linea = "SELECT * FROM ventadetalle WHERE id_venta = " + compra_nro
-  console.log("linea :", linea)
+  console.log("compra nro : ", compra_nro);
+  linea = "SELECT * FROM ventadetalle WHERE id_venta = " + compra_nro;
+  console.log("linea :", linea);
   const data = await pool.query(linea);
-  console.log("data dos", data)
+  console.log("data dos", data);
   //console.log("req",req.body)
   //console.log("articulos ", articulos)
-  res.render('ticket', { combo_prov, mfecha, mhora, total, largo, condicion, cliente, vuelto, pago, compra_nro, data });
+  res.render("ticket", {
+    combo_prov,
+    mfecha,
+    mhora,
+    total,
+    largo,
+    condicion,
+    cliente,
+    vuelto,
+    pago,
+    compra_nro,
+    data,
+  });
 });
 
-async function Actuali_Cliente(telefono, cliente, direccion, localidad, correo) {
-  console.log("Actuali_Cliente busco :", telefono)
+async function Actuali_Cliente(
+  telefono,
+  cliente,
+  direccion,
+  localidad,
+  correo
+) {
+  console.log("Actuali_Cliente busco :", telefono);
   try {
-    console.log("busco el telefono :", telefono)
+    console.log("busco el telefono :", telefono);
     var cli_busqueda = await busca_cliente(telefono);
 
-    console.log('cliente encontrado: ', cli_busqueda);
+    console.log("cliente encontrado: ", cli_busqueda);
     if (cli_busqueda == 0) {
-      var cli_busqueda = await nuevo_cliente(telefono, cliente, direccion, localidad, correo);
-      console.log('nuevo cliente: ', cli_busqueda);
+      var cli_busqueda = await nuevo_cliente(
+        telefono,
+        cliente,
+        direccion,
+        localidad,
+        correo
+      );
+      console.log("nuevo cliente: ", cli_busqueda);
     }
     if (cli_busqueda > 0) {
-
-      console.log('saldo anterir: ', cliente_saldoAnt);
+      console.log("saldo anterir: ", cliente_saldoAnt);
     }
-    return cli_busqueda
-  }
-  catch (e) {
+    return cli_busqueda;
+  } catch (e) {
     console.log("error jesus :", e);
   }
 }
 
 async function busca_cliente(telefono) {
   const linealsql = "SELECT * FROM cliente WHERE telefono = '" + telefono + "'";
-  console.log("linea de sql : ", linealsql)
-  var result = await pool.query(linealsql)
+  console.log("linea de sql : ", linealsql);
+  var result = await pool.query(linealsql);
   console.log("encontro  : ", result.length);
   if (result.length > 0) {
     rows = JSON.parse(JSON.stringify(result[0]));
-    cliente_cod = rows.id
-    cliente_saldoAnt = rows.saldo
-    clienteNuevo = false
+    cliente_cod = rows.id;
+    cliente_saldoAnt = rows.saldo;
+    clienteNuevo = false;
     console.log("codigo del encontrado: ", cliente_cod);
     console.log("saldo en funcion:", cliente_saldoAnt);
   }
   if (result == 0) {
-    console.log("cliente nuevo")
-    clienteNuevo = true
-    cliente_cod = 0
+    console.log("cliente nuevo");
+    clienteNuevo = true;
+    cliente_cod = 0;
   }
-  return cliente_cod
+  return cliente_cod;
 }
 
-
 async function nuevo_cliente(cel, cliente_des, direccion, localidad, correo) {
-  console.log("entro en nuevo")
-  var lineadesql = "INSERT INTO cliente values (NULL,'" + cliente_des + "', '" + direccion + "', '" + localidad + "', '" + cel + "', '" + " " + "', '" + " " + "', '" + correo + "', '" + 1 + "', '" + 0 + "', '" + 0 + "' , 'efectivo'" +")";
+  console.log("entro en nuevo");
+  var lineadesql =
+    "INSERT INTO cliente values (NULL,'" +
+    cliente_des +
+    "', '" +
+    direccion +
+    "', '" +
+    localidad +
+    "', '" +
+    cel +
+    "', '" +
+    " " +
+    "', '" +
+    " " +
+    "', '" +
+    correo +
+    "', '" +
+    1 +
+    "', '" +
+    0 +
+    "', '" +
+    0 +
+    "' , 'efectivo'" +
+    ")";
   console.log("linea de cliente nuevo", lineadesql);
   var result = await pool.query(lineadesql);
-  console.log("despues que creo :", result.insertId)
+  console.log("despues que creo :", result.insertId);
   return result.insertId;
 }
 
-async function Genera_Pedido(fecha, horalocal, cliente_cod, cliente_des, cliente_tel,
-  cliente_dir, total, nota, cliente_saldoAnt, producto, prod_id, desc, cant, prec, sttl) {
-    console.log("entro en Genera_Pedido crea el Pedido en la base de datos")
-  const pedido_nro = 0
-  console.log("entro en la funcion Genero el Pedido ")
-  const lineadesql = "INSERT INTO pedido values (NULL,'" + "llega" + "', '" + "0" + "', '" + "particular" + "', '" +
-    fecha + "', '" + horalocal + "', '" + cliente_cod + "', '" + cliente_des + "', '" + cliente_tel +
-    "', '" + cliente_dir + "', '" + 1 + "', '" + total + "', '" + " " + "', '" + nota + "', '" + cliente_saldoAnt + "')";
-  console.log("lineasql  ", lineadesql)
+async function Genera_Pedido(
+  fecha,
+  horalocal,
+  cliente_cod,
+  cliente_des,
+  cliente_tel,
+  cliente_dir,
+  total,
+  nota,
+  cliente_saldoAnt,
+  producto,
+  prod_id,
+  desc,
+  cant,
+  prec,
+  sttl
+) {
+  console.log("entro en Genera_Pedido crea el Pedido en la base de datos");
+  const pedido_nro = 0;
+  console.log("entro en la funcion Genero el Pedido ");
+  const lineadesql =
+    "INSERT INTO pedido values (NULL,'" +
+    "llega" +
+    "', '" +
+    "0" +
+    "', '" +
+    "particular" +
+    "', '" +
+    fecha +
+    "', '" +
+    horalocal +
+    "', '" +
+    cliente_cod +
+    "', '" +
+    cliente_des +
+    "', '" +
+    cliente_tel +
+    "', '" +
+    cliente_dir +
+    "', '" +
+    1 +
+    "', '" +
+    total +
+    "', '" +
+    " " +
+    "', '" +
+    nota +
+    "', '" +
+    cliente_saldoAnt +
+    "')";
+  console.log("lineasql  ", lineadesql);
   var result = await pool.query(lineadesql);
-  console.log("despues que creo Pedido :", result.insertId)
+  console.log("despues que creo Pedido :", result.insertId);
   pedido_nro = result.insertId;
 
   //////////////    Pedido detalle
 
-  console.log("cantidad de articulos", producto.length)
-  const lineadesqldetalle = "INSERT INTO pedidodetalle values (NULL,'" + pedido_nro + "','" + fecha + "', '" + cliente_cod + "', '";
-  console.log("linea base de detallepedido  lineadesqldetalle :", lineadesqldetalle)
+  console.log("cantidad de articulos", producto.length);
+  const lineadesqldetalle =
+    "INSERT INTO pedidodetalle values (NULL,'" +
+    pedido_nro +
+    "','" +
+    fecha +
+    "', '" +
+    cliente_cod +
+    "', '";
+  console.log(
+    "linea base de detallepedido  lineadesqldetalle :",
+    lineadesqldetalle
+  );
   if (producto.length > 1) {
     for (let i = 0; i < producto.length; i++) {
       /* console.log("codigo",producto[i][4])
@@ -992,31 +1277,51 @@ async function Genera_Pedido(fecha, horalocal, cliente_cod, cliente_des, cliente
        console.log("cantidad",producto[i][0])
        console.log("precio uni",producto[i][2])
        console.log("sttl",producto[i][3]) */
-      const lineadesql2 = lineadesqldetalle + producto[i][4] + "','" + producto[i][1] +
-        "','" + producto[i][0] + "','" + "0" + "','" +
-        producto[i][2] + "','" + producto[i][3] + "')"
-      console.log("lineadesql2 :  ", lineadesql2)
+      const lineadesql2 =
+        lineadesqldetalle +
+        producto[i][4] +
+        "','" +
+        producto[i][1] +
+        "','" +
+        producto[i][0] +
+        "','" +
+        "0" +
+        "','" +
+        producto[i][2] +
+        "','" +
+        producto[i][3] +
+        "')";
+      console.log("lineadesql2 :  ", lineadesql2);
       const resultpedidodetalle = await pool.query(lineadesql2);
-      console.log("Numero de pedido detalle nuevo:", resultpedidodetalle.insertId)
+      console.log(
+        "Numero de pedido detalle nuevo:",
+        resultpedidodetalle.insertId
+      );
     }
-  }
-  else {
-    console.log("si es un solo producto")
-    const lineadesql2 = lineadesqldetalle + prod_id + "','" + desc + "','" + cant + "','" + "0" + "','" +
-      prec + "','" + sttl + "')"
-    console.log("lineadesql2 :  ", lineadesql2)
+  } else {
+    console.log("si es un solo producto");
+    const lineadesql2 =
+      lineadesqldetalle +
+      prod_id +
+      "','" +
+      desc +
+      "','" +
+      cant +
+      "','" +
+      "0" +
+      "','" +
+      prec +
+      "','" +
+      sttl +
+      "')";
+    console.log("lineadesql2 :  ", lineadesql2);
     const resultpedido = await pool.query(lineadesql2);
-    console.log("despues que creo Detalle Pedido :", resultpedido.insertId)
+    console.log("despues que creo Detalle Pedido :", resultpedido.insertId);
   }
-
 }
 
-
-
-
-router.get('/compra_ok', async (req, res) => {
+router.get("/compra_ok", async (req, res) => {
   window.location = "compraok";
 });
-
 
 export default router;
