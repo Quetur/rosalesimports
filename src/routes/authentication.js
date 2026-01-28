@@ -502,7 +502,7 @@ router.get("/producto/:id", async (req, res) => {
       "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,FORMAT(precio1,'N0') as precio1f ,tipoventa,foto2,nota,FORMAT(precio1 * 1.1, 'N0') as precio1_10p FROM producto WHERE id_categoria = ? and visible=1 ORDER BY id_categoria,id_subcategoria,orden",
       [req.params.id]
     );
-    console.log("productos ", pro);
+    //console.log("productos ", pro);
     res.render("ProductoLista", { pro }); // pasar pro a carritoadd
   }
 });
@@ -763,7 +763,7 @@ router.post("/send-email", async (req, res) => {
 
   const mailOptions = {
     from: "rosalesjimport@gmail.com",
-    cc: "rosalesjimport@gmail.com",
+    cc: "rosalesjimports@gmail.com,rosalesjulian2302@gmail.com",
     to: correo,
     subject: "Pedido de Los Rosales Imports",
     text: cel,

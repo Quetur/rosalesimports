@@ -1,0 +1,210 @@
+:root {
+  --bg-body: #f0f2f5;
+  --bg-card: #ffffff;
+  --primary: #111827;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-active: #1e40af;
+  --danger: #ef4444;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --radius: 24px;
+  --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--bg-body);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Contenedor de la Tarjeta */
+.card {
+  background: var(--bg-card);
+  width: calc(100vw - 50px);
+  padding: 24px;
+  border-radius: var(--radius);
+  position: relative;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
+  height: calc(100vh - 50px);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  color: rgb(37 99 235);
+  font-weight: 800;
+  text-align: center; /* Centra el texto */
+  text-decoration: underline; /* Añade el subrayado */
+}
+
+/* Botón de Cerrar Superior */
+.close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  background: #ff7f7f;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  transition: all 0.2s ease;
+  z-index: 10;
+  border: 2px solid #000000; /* Crea un anillo negro de 2px */
+}
+
+.close-btn:hover {
+  background: var(--danger);
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* Imagen del Producto */
+.image-container {
+  width: 65%;
+  height: 400px;
+  /* Ajusta esta altura según tu diseño */
+  border-radius: 18px;
+  overflow: hidden;
+  margin: 0 auto 20px auto;
+  /* "0 auto" centra el contenedor mismo horizontalmente */
+  background: var(--bg-card);
+
+  /* Centrado de la imagen */
+  display: flex;
+  justify-content: center;
+  /* Centrado horizontal */
+  align-items: center;
+  /* Centrado vertical */
+}
+
+.image-container img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  /* Cambiado a 'contain' para que la imagen no se corte al ser 85% */
+}
+
+/* Información */
+
+.card h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.price-tag {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+/* Controles de Cantidad Agrandados */
+.quantity-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f3f4f6;
+  padding: 8px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.btn-qty {
+  width: 50px;
+  /* Tamaño optimizado para 2026 */
+  height: 50px;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.btn-qty:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-qty:active {
+  transform: scale(0.9);
+}
+
+#qty-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Botón Agregar al Carrito */
+.btn-add {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    /* Suavizamos la transición para una sensación más premium */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+/* Efecto al pasar el ratón: El fondo se oscurece un poco */
+.btn-add:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+/* EFECTO AL SER PULSADO */
+.btn-add:active {
+    background: var(--accent-active);
+    transform: scale(0.96); /* Efecto de hundimiento */
+    color: #93c5fd; /* El icono y el texto cambian a un azul claro */
+}
+
+.btn-add svg {
+    width: 20px;
+    height: 20px;
+    /* Asegura que el trazo responda al cambio de color del texto */
+    stroke: currentColor; 
+}
+
+/* Animación de salida */
+.fade-out {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
