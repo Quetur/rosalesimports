@@ -94,7 +94,7 @@ router.get("/logout", (req, res) => {
   req.logOut();
   res.redirect("/");
 });
-
+ 
 //router.get('/profile', isLoggedIn, (req, res) => {
 //import * as auth from './lib/auth.js';
 
