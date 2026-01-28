@@ -107,7 +107,7 @@ router.get("/productocambia", async (req, res) => {
   const [data] = await pool.query(
     "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
-  console.log({ data });
+  //console.log({ data });
   res.render("productocambia", { data });
 });
 
@@ -307,8 +307,8 @@ router.get("/tildar/:id", async (req, res) => {
     "update producto set visible=1 where id_producto = ?",
     [id]
   );
-  const data = await pool.query(
-    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  const [data] = await pool.query(
+   "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
   res.render("productocambia", { data });
 });
@@ -320,8 +320,8 @@ router.get("/destildar/:id", async (req, res) => {
     "update producto set visible=0 where id_producto = ?",
     [id]
   );
-  const data = await pool.query(
-    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  const [data] = await pool.query(
+    "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
   res.render("productocambia", { data });
 });
@@ -333,8 +333,8 @@ router.get("/tildarmayor/:id", async (req, res) => {
     "update producto set vermayor=1 where id_producto = ?",
     [id]
   );
-  const data = await pool.query(
-    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  const [data] = await pool.query(
+    "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
   res.render("productocambia", { data });
 });
@@ -473,8 +473,8 @@ router.get("/productodel/:id", async (req, res) => {
   console.log("delete", id);
   await pool.query("DELETE FROM producto WHERE id_producto = ?", [id]);
   req.flash("success", "Link Removed Successfully");
-  const data = await pool.query(
-    "SELECT id_producto,des,precio1,tipoventa,foto2,id_categoria,id_subcategoria,orden,visible FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  const [data] = await pool.query(
+    "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
   res.render("productocambia", { data });
 });
