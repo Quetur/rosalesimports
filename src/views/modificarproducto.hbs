@@ -1,9 +1,11 @@
 <body>
   <div class="container modificarproducto">
-
+      <p style="width:500px; align= left" readonly>Categoria</p>
     <select name="combo_categoria" id="combo_categoria"  style="width: 100%;  text-align: right;">
       {{#each cat}}
-      {{#if id_categoria_producto}}
+
+         {{#if id_categoria_producto}}
+         
         <option selected value={{id_categoria}}>{{des}}</option>
       {{else}}
        <option value={{id_categoria}}>{{des}}</option>
@@ -11,27 +13,22 @@
       {{/each}}
       
     </select>
-    <select name="combo_subcategoria" id="combo_subcategoria" style="width: 100%;  text-align: right;">
-      {{#each subcat}}
-      {{#if id_subcategoria_producto}}
-        <option codigo={{id_categoria}} selected value={{id_subcategoria}}>{{des}}</option>
-      {{else}}
-        <option codigo={{id_categoria}} value={{id_subcategoria}}>{{des}}</option>
-      {{/if}}
-      {{/each}}
+ 
     </select>
     {{#each pro}}
 
     <form class="grid-div" action="/productomodi/{{id_producto}}" method="post">
       <input id="id_categoria" name="id_categoria" value="{{id_categoria}}" hidden=true> </input>
-      <input id="id_subcategoria" name="id_subcategoria" value="{{id_categoria}}" hidden=true> </input>
+     
       <table border=3 style="border-collapse: separate;" id="tabla" align="center">
         <tr>
           <td valign="top" class="descripcion-producto" >
+              <p  style="width:500px; align= left" readonly> Descripcion</p>
               <input id="des" name="des" value="{{des}}" style="width:500px; align= left"> </input>            
           </td>
            <td valign="top" class="descripcion-producto" >
-              <input id="cod_barra" name="cod_barra" value="{{cod_barra}}" style="width:200px; align= center"> </input>
+            <p value="Titulo" style="width:500px; align= left" readonly> Titulo</p>
+              <input id="titulo" name="titulo" value="{{titulo}}" style="width:200px; align= center"> </input>
           </td>
         </tr>
         <tr>
@@ -42,7 +39,7 @@
 
               {{#if foto2}}
               <!-- <img class="grid-img" src="../../img/{{foto2}}" value="../../img/{{foto2}}" />-->
-              <img class="grid-img" src="https://losrosales-fileserver.s3-sa-east-1.amazonaws.com/img/{{foto2}}" />
+              <img class="grid-img" src="{{foto2}}" />
 
               {{else}}
               <img class="grid-img" />
@@ -57,30 +54,14 @@
           </tr>
           <tr  style="align:left;">
             <td style="align-items: left; text-align: left;">
-              <BR>Orden: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-              <input id="orden" name="orden" value="{{orden}}" style="width:30px; align:center"></input>
               <BR>Nota: </BR>
               <input id="nota" value="{{nota}}"name="nota" style="width:650px; align:center"></input>
-              <BR>Tipo de venta :
-              <select id="tipoventa2" value="{{tipoventa}}" >
-                <option selected value={{tipoventa}}>{{tipoventa}}</option>
-                <option value="unidad">unidad </option>
-                <option value="kilo">kilo </option>
-                <option value="kilo.">kilo y unidad </option>
-              </select>
-               <input id="tipoventa" name="tipoventa" value="{{tipoventa}}"  hidden=true> </input>
-              <BR>Se fracciona x:
-              <input name="unidad" type="text" align="right" width="20%" id="unidad" value={{unidad}}></input>
-              <BR>Descuento x unidad:
-              <input name="descuentoxunidad" type="text" align="right" width="20%" id="descuentoxunidad" value={{descuentoxunidad}}></input>
-              <BR>Descuento a partir de:
-              <input name="descuentoapartir" type="text" align="right" width="20%" id="descuentoapartir" value={{descuentoapartir}}></input>
+            
 
             </td>
 
             <td>
-              <input class="total-price2" id="costo" name="costo" value={{costo}} required></input>
-              <input class="total-price2" id="precio2" name="precio2" value={{precio2}} required></input>
+              <BR>Precio :</BR>
               <input class="total-price2" id="precio1" name="precio1" value={{precio1}} required></input>
             </td>
           </tr>

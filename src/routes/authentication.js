@@ -104,9 +104,10 @@ router.get("/profile", (req, res) => {
 
 router.get("/productocambia", async (req, res) => {
   console.log("authentication listado producto");
-  const data = await pool.query(
-    "SELECT id_producto,orden,id_categoria,id_subcategoria,des,costo,precio2,precio1,tipoventa,foto2,visible,vermayor FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  const [data] = await pool.query(
+    "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
+  console.log({ data });
   res.render("productocambia", { data });
 });
 
@@ -282,18 +283,16 @@ router.get('/productoedit/:id', async (req, res) => {
 
 router.get("/modificarproducto/:id", async (req, res) => {
   console.log("modificarproducto");
-  const pro = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [
-    req.params.id,
-  ]);
+  const [pro] = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [req.params.id]);
 
-  const cat = await pool.query(
+  const [cat] = await pool.query(
     "SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto FROM categoria c, producto p where p.id_producto=?",
     [req.params.id]
   );
 
   //const cat = await pool.query("SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto  FROM categoria c, producto p ");
 
-  const subcat = await pool.query(
+  const [subcat] = await pool.query(
     "SELECT d.id_categoria, d.id_subcategoria, d.des, IF(p.id_subcategoria=d.id_subcategoria, 'S', '')  id_subcategoria_producto FROM subcategoria d, producto p where p.id_producto=?",
     [req.params.id]
   );
@@ -361,25 +360,23 @@ router.post("/productomodi/:id", async (req, res) => {
   console.log(id);
   console.log("id_categoria :", id_categoria);
   if (id_categoria > "1") {
-    const newProducto = req.body;
+    const NuevosDatos = req.body;
 
-    const des = newProducto.des; // newProducto lo tomo del body
-    console.log("new producto :");
-    console.dir(newProducto);
-    //req.getConnection((err, conn) => {
+    const des = NuevosDatos.des; // newProducto lo tomo del body
+    console.log("nuevos datos del producto :",NuevosDatos);
     const pro = await pool.query(
       "UPDATE producto set ? WHERE id_producto = ?",
-      [newProducto, id]
+      [NuevosDatos, id]
     );
     //console.log(pro);
 
     //UPDATE `producto` SET `des` = 'Queso Mar Del Plata' WHERE `producto`.`id_producto` = 1;
-    console.log("grabo");
+    console.log("grabo", pro);
   } else {
     console.log("no grabo");
   }
-  const data = await pool.query(
-    "SELECT * FROM producto ORDER BY id_categoria,id_subcategoria,orden"
+  const [data] = await pool.query(
+    "SELECT *, c.des as cat_des, producto.des as prod_des FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
   res.render("productocambia", { data });
 });
@@ -494,7 +491,7 @@ router.get("/producto/:id", async (req, res) => {
       "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE visible=1 ORDER BY id_categoria,id_subcategoria,orden",
       [req.params.id]
     );
-    res.render("ProductoLista", { pro, cat });
+    res.render("producto_dos", { pro, cat });
   } else {
     const [
       pro,
