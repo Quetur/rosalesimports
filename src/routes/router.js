@@ -234,7 +234,7 @@ router.post("/login", async (req, res, next) => {
     console.log(error);
   }
   console.log("salio router 240")
-
+  res.render("index",   );
 });
 
 export const verificarEstado = (req, res, next) => {
