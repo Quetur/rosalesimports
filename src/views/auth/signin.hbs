@@ -115,6 +115,16 @@
       }
     }
 
+     function formatoDni(e) {
+      console.log("dni : ", (document.getElementById('dni').value).length)
+      var temp = document.getElementById('dni').value
+      temp = temp.replaceAll('.', '')
+      console.log("nuevo dni", temp)
+      document.getElementById('mdni').value = temp
+      console.log("mdni >", document.getElementById('mdni').value)
+      document.getElementById('mdni').value = temp
+    }
+
      $("#dni").on({
       "focus": function(event) {
         $(event.target).select();
