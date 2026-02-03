@@ -1,20 +1,24 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
 
-const pool = require('../database');
-const helpers = require('./helpers');
+import pool from '../database.js';
+import bcryptjs from "bcryptjs";
+
+
 //mailField: 'mail',mail,
 passport.use('local.signin', new LocalStrategy({
-  usernameField: 'username',  
-  passwordField: 'password',
+  usernameField: 'dni',  
+  passwordField: 'pass',
   passReqToCallback: true
-}, async (req, username,password, done) => {
-  const rows = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+}, async (req, dni,pass, done) => {
+  const [rows] = await pool.query(`SELECT * FRom usuario WHERE dni = ?`, [dni]);
   if (rows.length > 0) {
     const user = rows[0];
-    const validPassword = await helpers.matchPassword(password, user.password)
+    const validPassword = await bcryptjs.compare(pass, rows[0].pass)
+    console.log("valid password", validPassword)
     if (validPassword) {
-      done(null, user, req.flash('success', 'Los Rosales te da la bienvenida ' + user.username));
+      console.log("passport 20", user.nombre)
+      //done(null, user, req.flash('success', 'Los Rosales te da la bienvenida ' + user.nombre));
     } else {
       done(null, false, req.flash('message', 'Contraseña Incorrecta'));
     }
@@ -23,6 +27,7 @@ passport.use('local.signin', new LocalStrategy({
   }
 }));
 //,mail, mail,
+console.log("passport 30")
 passport.use('local.signup', new LocalStrategy({
   usernameField: 'username', 
   passwordField: 'password',
@@ -41,8 +46,9 @@ passport.use('local.signup', new LocalStrategy({
 
   newUser.password = await helpers.encryptPassword(password);
   // Saving in the Database
-  const result = await pool.query('INSERT INTO users SET ? ', newUser);
+  const [result] = await pool.query('INSERT INTO users SET ? ', newUser);
   newUser.id_users = result.insertId;
+  console.log(newUser)
   return done(null, newUser);
 }));
 
@@ -72,3 +78,4 @@ passport.use('local.producto', new LocalStrategy({
   }
 }));
 
+export default passport;

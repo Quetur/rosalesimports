@@ -5,13 +5,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import { create } from 'express-handlebars';
 import { engine } from 'express-handlebars'; 
-import session from 'express-session';
+
 import flash from 'connect-flash'; // mensajes de alerta
 import validator from 'express-validator';
 //const MySQLStore = require('express-mysql-session')(session);
 import  bodyParser from 'body-parser';
 import  nodemailer from 'nodemailer';
 import express from 'express';
+import cors from 'cors';
 //import router from './routes/router.js'; // Note the mandatory .js extension in ESM
 
 import AWS from 'aws-sdk';
@@ -19,11 +20,33 @@ import fs  from 'fs';
 import dotenv  from 'dotenv'
 
 import 'dotenv/config';
-
+import jwt from "jsonwebtoken";
+import { verificarToken } from './views/auth/auth.js';
 
 // Intializations
 const app = express();
-//require('./lib/passport');
+app.use(cors()); // Permite que tu frontend se comunique con el backend
+import session from 'express-session';
+
+const SECRET = process.env.JWT_SECRETO || 'llave_secreta_provisional';
+// ... (configuración de tu app Express)
+
+app.use(session({
+  secret: 'mi_secreto_ultra_seguro',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, // Cambiar a true si usas HTTPS
+    maxAge: 1000 * 60 * 60 * 24 // 1 día de duración
+  }
+}));
+
+import cookieParser from 'cookie-parser';
+app.use(cookieParser());
+
+
+
+
 
 
 // Settings
@@ -33,15 +56,7 @@ app.set('port', process.env.PORT || 4000);
 
 app.set('views', path.join(__dirname, 'views'));
 
-/*app.engine('.hbs', exphbs({
-  defaultLayout: 'main',
-  layoutsDir: path.join(app.get('views'), 'layouts'),
-  partialsDir: path.join(app.get('views'), 'partials'),
-  extname: '.hbs',
-  helpers: require('./lib/handlebars')
-}
-))
-*/
+
 const hbs = create({
   extname: '.hbs',          // Specify the file extension
   defaultLayout: 'main',    // Specify the default layout file (e.g., main.hbs)
@@ -49,8 +64,6 @@ const hbs = create({
   partialsDir: './src/views/partials/' // Specify the partials directory
 });
 
-// Register the handlebars engine with the Express app
-//app.engine('.hbs', hbs.engine);
 app.engine('.hbs', engine({
     extname: '.hbs',
     runtimeOptions: {
@@ -69,13 +82,16 @@ app.set('view engine', '.hbs');
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-/*
+
+
 app.use(session({
-  secret: 'sessionsecreta ',
+  secret: 'jesus', //
   resave: false,
   saveUninitialized: false,
-  store: new MySQLStore(database)
 }));
+
+/*
+
 
 app.use(flash());
 // Middlewares
@@ -83,11 +99,13 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-app.use(flash());
+
 
 */
-//app.use(passport.initialize());
-//app.use(passport.session());
+import passport from 'passport';
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(validator());
 //app.use(nodemailer.createTransport);
 

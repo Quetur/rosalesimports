@@ -3,6 +3,10 @@ import multer from "multer";
 import nodemailer from "nodemailer";
 import path from "path";
 import { fileURLToPath } from "url";
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+//import { authlogin, salir, recuperoUSR } from "../controllers/authController.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,7 +53,7 @@ const router = express.Router();
 import pool from "../database.js";
 
 import passport from "passport";
-//import { isLoggedIn } from '../lib/auth.js';
+import { isLoggedIn } from "../lib/auth.js";
 //import { CostExplorer } from 'aws-sdk';
 import { Console } from "console";
 //import { eventNames } from 'process';
@@ -71,22 +75,16 @@ router.post(
 
 // ingreso
 router.get("/signin", (req, res) => {
+  console.log("get signin");
   res.render("auth/signin");
 });
 
-router.post("/signin", (req, res, next) => {
-  console.log("pulso");
-  req.check("username", "Username is Required").notEmpty();
-  req.check("password", "Password is Required").notEmpty();
-  const errors = req.validationErrors();
-  if (errors.length > 0) {
-    req.flash("message", errors[0].msg);
-    res.redirect("/signin");
-  }
-  passport.authenticate("local.signin", {
-    successRedirect: "/profile",
-    failureRedirect: "/signin",
-    failureFlash: true,
+
+router.post('/signin', (req, res, next) => {
+  passport.authenticate('local.signin', {
+    successRedirect: '/profile',
+    failureRedirect: '/signin',
+    failureFlash: true
   })(req, res, next);
 });
 
@@ -94,12 +92,13 @@ router.get("/logout", (req, res) => {
   req.logOut();
   res.redirect("/");
 });
- 
-//router.get('/profile', isLoggedIn, (req, res) => {
-//import * as auth from './lib/auth.js';
 
-router.get("/profile", (req, res) => {
-  res.render("profile");
+
+
+
+router.get('/profile', isLoggedIn, (req, res) => {
+  console.log("progile de autentication");
+  res.render('profile',);
 });
 
 router.get("/productocambia", async (req, res) => {
@@ -283,16 +282,23 @@ router.get('/productoedit/:id', async (req, res) => {
 
 router.get("/modificarproducto/:id", async (req, res) => {
   console.log("modificarproducto");
-  const [pro] = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [req.params.id]);
+  const [pro] = await pool.query(
+    "SELECT * FROM producto WHERE id_producto = ?",
+    [req.params.id]
+  );
 
-  const [cat] = await pool.query(
+  const [
+    cat,
+  ] = await pool.query(
     "SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto FROM categoria c, producto p where p.id_producto=?",
     [req.params.id]
   );
 
   //const cat = await pool.query("SELECT c.id_categoria, c.des, IF(p.id_categoria=c.id_categoria, 'S', '') id_categoria_producto  FROM categoria c, producto p ");
 
-  const [subcat] = await pool.query(
+  const [
+    subcat,
+  ] = await pool.query(
     "SELECT d.id_categoria, d.id_subcategoria, d.des, IF(p.id_subcategoria=d.id_subcategoria, 'S', '')  id_subcategoria_producto FROM subcategoria d, producto p where p.id_producto=?",
     [req.params.id]
   );
@@ -308,7 +314,7 @@ router.get("/tildar/:id", async (req, res) => {
     [id]
   );
   const [data] = await pool.query(
-   "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
+    "SELECT *, c.des as cat_des, producto.des as prod_des  FROM producto INNER JOIN categoria c ON c.id_categoria = producto.id_categoria ORDER BY producto.id_categoria,producto.id_subcategoria,producto.orden"
   );
   res.render("productocambia", { data });
 });
@@ -363,7 +369,7 @@ router.post("/productomodi/:id", async (req, res) => {
     const NuevosDatos = req.body;
 
     const des = NuevosDatos.des; // newProducto lo tomo del body
-    console.log("nuevos datos del producto :",NuevosDatos);
+    console.log("nuevos datos del producto :", NuevosDatos);
     const pro = await pool.query(
       "UPDATE producto set ? WHERE id_producto = ?",
       [NuevosDatos, id]
@@ -506,16 +512,17 @@ router.get("/producto/:id", async (req, res) => {
 
 router.get("/producto_detalle/:id", async (req, res) => {
   console.log("entro producto_detalle", [req.params.id]);
- console.log("parametros", [req.params.parametros]); 
-  var consulta = "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,FORMAT(precio1,'N0') as precio1f,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_producto ="+ [req.params.id]
+  console.log("parametros", [req.params.parametros]);
+  var consulta =
+    "SELECT id_categoria,id_subcategoria,orden,id_producto,unidad,titulo,des,precio1,FORMAT(precio1,'N0') as precio1f,tipoventa,foto2,nota,precio1 * 1.1 as precio1_10p FROM producto WHERE id_producto =" +
+    [req.params.id];
   console.log("consulta", consulta);
   try {
-    const [ card ] = await pool.query(consulta);
-   
+    const [card] = await pool.query(consulta);
+
     console.log("producto detalle ", card);
 
-    res.render('ProductoCard', {  card, layout: false });
-    
+    res.render("ProductoCard", { card, layout: false });
   } catch (error) {
     {
       console.log(error);
@@ -1320,5 +1327,114 @@ async function Genera_Pedido(
 router.get("/compra_ok", async (req, res) => {
   window.location = "compraok";
 });
+
+router.get("/login", async (req, res) => {
+  console.log("login");
+  res.render("login");
+  //  window.location = "compraok";
+});
+
+router.post("/authlogin", async (req, res) => {
+  console.log("authlogin");
+  try {
+    const dni = req.body.mdni;
+    const pass = req.body.pass;
+    console.log(dni, pass);
+    if (!dni || !pass) {
+      res.render("login", {
+        alert: true,
+        alertTitle: "Advertencia",
+        alertMessage: "Ingrese un usuario y password",
+        alertIcon: "info",
+        showConfirmButton: true,
+        timer: false,
+        ruta: "",
+      });
+    } else {
+      console.log("entro aca tiene login y password");
+      try {
+        const [results, fields] = await pool.query(
+          `SELECT * FROM usuario WHERE dni = ?`,
+          dni
+        );
+        console.log("encontro", results.length);
+        console.log("encontro", results[0]);
+        //res.json(result);
+        if (
+          results.length == 0 ||
+          !(await bcryptjs.compare(pass, results[0].pass))
+        ) {
+          console.log("usuario o password incorrecto");
+          res.render("login", {
+            alert: true,
+            alertTitle: "No se pudo ingresar",
+            alertMessage: "¡usuario o password incorrectos",
+            alertIcon: "error",
+            showConfirmButton: true,
+            timer: 10000,
+            ruta: "login",
+            user: "",
+            dni: "",
+            apellido: "",
+            logo: "",
+          });
+        } else {
+          //inicio de sesión OK
+          console.log("inicio ok");
+          const id = results[0].dni;
+          console.log(id);
+          console.log("else esto es results[0]", results[0]);
+          req.user = results[0];
+          // jwt es la libreria
+          console.log("secreto", process.env.JWT_SECRETO);
+          const token = jwt.sign({ id: id }, process.env.JWT_SECRETO, {
+            expiresIn: process.env.JWT_TIEMPO_EXPIRA,
+          });
+          //generamos el token SIN fecha de expiracion
+          //const token = jwt.sign({id: id}, process.env.JWT_SECRETO)
+          console.log("TOKEN: " + token + " para el USUARIO : " + dni);
+
+          const cookiesOptions = {
+            expires: new Date(
+              Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+            ),
+            httpOnly: true,
+          };
+          res.cookie("jwt", token, cookiesOptions);
+          let usr = results[0].nombre;
+          let apellido = results[0].apellido;
+          console.log("77 - results[0].nombre = ", usr);
+          res.render("login", {
+            alert: true,
+            alertTitle: "Conexión exitosa",
+            alertMessage: "¡LOGIN CORRECTO!",
+            alertIcon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+            ruta: "home",
+            user: usr,
+            dni: dni,
+            apellido: apellido,
+            logo: results[0].imagen,
+            userid: dni,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        //return res.status(500).json({ message: error.message });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.get("/admin", isLoggedIn, async (req, res) => {
+  console.log("authentication /admin");
+  console.log("req.user", req.user);
+  //const   res.render('productoventa', { produ, prov, comercio, cli, llegapedido, preparapedido });
+});
+
+
 
 export default router;

@@ -5,30 +5,62 @@
     <div class="col-md-4 mx-auto">
       <div class="card text-center">
         <div class="card-header">
-          <h3>SignIn</h3>
+          <h3>Acceso a rosales imports</h3>
         </div>
-        <img src="../img/logo.jpeg" alt="logo" class="card-img-top mx-auto m-2 rounded-circle w-50">
+        <img src="../img/logo.jpg" alt="logo" class="card-img-top mx-auto m-2 rounded-circle w-50">
         <div class="card-body">
-          <form action="/signin" method="POST">
+           <form id="formlogin" action="/login" method="POST">
             <div class="form-group">
-              <input type="text" name="username" placeholder="Username" class="form-control" autofocus required>
+              <div class="mb-3 material-textfield">
+                    <input type="text" class="form-control input-number" id="dni" name="dni" placeholder="" onchange="formatoDni(this)">
+                    <label for="dni" class="">Numero de DNI </label>
+                  </div>
             </div>
-            <div class="form-group">
-              <input type="password" name="password" placeholder="Password" class="form-control" required>
-            </div>
-            <button class="btn btn-primary btn-block">
-              Ingresar
-            </button>
+             <td style="width: 250px !important; text-align: right;">
+                  <input type="text" class="form-control" id="mdni" name="mdni" hidden>
+                  <div class="mb-3 material-textfield">
+                    <input type="password" class="form-control" id="pass" name="pass" style="width: 200px;" >
+                    <label for="password">Contraseña</label>
+                </td>
+            <input class="w-100 btn btn-lg btn-primary" value="Ingresar" onclick="ingresar()" readonly></button>
           </form>
 
         </div>
       </div>
     </div>
   </div>
+  
+  <script type="text/javascript">
+    console.log("paso")
+    console.log("alert", "{{alert}}")
+    /*
+    if ("{{alert}}" === "true") 
+      {
+        Swal.fire({
+          icon: 'error',
+          title: ' USUARIO INCORRECTO',
+          text: 'cargue su DNI !!!...',
+          showConfirmButton: false,
+          timer: 2000,
+      });
+    }
+    else if ("{{alert}}" === "false") {
+      Swal.fire({
+      title: 'alertTitle ',
+      text: 'alertMessage',
+      icon: ' alertIcon ',
+      showConfirmButton: ' showConfirmButton ',
+      timer: 1000,
 
-
-<script type="text/javascript">
-
+    }).then(() => {
+      sessionStorage.clear();
+      console.log("dni", "{{dni}}")
+      sessionStorage.setItem("dni", "{{dni}}");
+      sessionStorage.setItem("nombre", "user "+ "{{nombre}}");
+      window.location = "{{ruta}}";
+    })
+    }
+    */
     $(document).ready(function () {
 
       
@@ -46,6 +78,54 @@
         console.log(str);
        }
       });
+    });
+  </script>
+
+
+
+<script type="text/javascript">
+     
+    function ingresar() {
+      if ((document.getElementById('dni').value).length == 0) {
+        document.getElementById("dni").focus();
+        Swal.fire({
+          icon: 'error',
+          title: ' USUARIO INCORRECTO',
+          text: 'cargue su DNI !!!...',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return false;
+      } else {
+        if ((document.getElementById('pass').value).length == 0) {
+          console.log("pass = nada")
+          //console.log("cliente : "document.getElementById('combo_cliente').value);
+          document.getElementById("pass").focus();
+          Swal.fire({
+            icon: 'error',
+            title: ' PASSWORD VACIO',
+            text: 'cargue su contraseña !!!...',
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          return false;
+
+        }
+        document.getElementById("formlogin").submit();
+      }
+    }
+
+     $("#dni").on({
+      "focus": function(event) {
+        $(event.target).select();
+      },
+      "keyup": function(event) {
+        $(event.target).val(function(index, value) {
+          return value.replace(/\D/g, "")
+            .replace(/([0-9])/, '$1')
+            .replace(/\B(?=(\d{3})+(?!\d)\.?)/g, ".");
+        });
+      }
     });
   </script>
 </body>

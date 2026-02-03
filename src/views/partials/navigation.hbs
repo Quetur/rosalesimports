@@ -3,13 +3,17 @@
   <div class="container">
     <table border=0 class="tabla-barra">
       <tr>
-          <td></td>
+        <td>              
+     <input align="left" id="usuario" name="usuario" class=" border-0" readonly></input>
+         </td>
+         
+           
           <td></td>
           <td>
             <input align="left" id="items" name="items" class="numcarrito border-0" readonly></input>
           </td>
           <td></td>
- 
+  
 
       </tr>
       <tr>
@@ -34,10 +38,19 @@
             </div>
           </ul>
         </td>
+        
+       
+                          
         <td width="5%">
           <a align="left" href="/">
+
           <img align="left" src="../img/logo.jpg"  height="200px"  width="200px" name="imglogo" > </a>
         </td>
+         <td style="width:400px;  align-items: center; text-align: center;">
+            <a class="navbar-brand" style="font-size: 3rem; color:rgb(128, 146, 247);" href="/">
+     
+            </a>
+          </td>
         <td width="20%" >   
               <a href="/carritobarra"  >
               <img align="center" src="../img/carrito_gris.png"  height="150px"  width="150px" > </img>
@@ -47,7 +60,15 @@
           <a href="https://www.instagram.com/rosalesimports.ar/" >
           <img align="left" src="../img/instagram.png"  height="70px"  width="70px" > </a>
         </td>
-               
+        <td>
+         <div id="seccion-privada" style="display: none;">
+            <button id="btnproductos" class="btn-productos">PRODUCTOS</button>
+            <button id="btnLogout" class="btn-salir">Cerrar Sesión</button>
+        </div> 
+         <div id="seccion-publica" >
+            <button id="btnAdmin" class="btn-salir">Acceso</button>
+        </div> 
+        </td>
       </tr>
     </table>
   </div>
@@ -55,6 +76,24 @@
 
 
 <script>
+  console.log('partial/navigation.hbs');
+  const token = sessionStorage.getItem('token_acceso');
+  const seccion = document.getElementById('seccion-privada');
+  if (token) {
+    console.log("Token encontrado:", token);
+    const usuario = sessionStorage.getItem('nombre');
+    console.log("usario", usuario)
+    document.getElementById('usuario').value = usuario;
+      // Si existe el token, mostramos el div
+    seccion.style.display = 'block';
+    document.getElementById('btnAdmin').style.display='none';
+    document.getElementById('btnproductos').style.display='block';
+    document.getElementById('btnLogout').style.display='block';
+  } else {
+    document.getElementById('usuario').style.display = "none";
+    console.log("No hay sesión activa.");
+    document.getElementById('btnAdmin').style.display = 'block';
+  }
   productosLS = obtenerProductosLocalStorage();
   //productoLS = JSON.parse(localStorage.getItem('productos'));
   console.log(productosLS);
@@ -69,15 +108,52 @@
     if (localStorage.getItem('productos') === null) {
       console.log('no tiene');
       productoLS = [];
-    }
-    else {
+      }
+      else {
       console.log('tiene navigation');
      // console.dir(localStorage.getItem('productos'));
-      productoLS = JSON.parse(localStorage.getItem('productos'));
-    }
+        productoLS = JSON.parse(localStorage.getItem('productos'));
+     }
    // document.getElementById('items').value = localStorage.length;
     return productoLS;
   }
+
+// Escuchar el clic en el botón
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    
+    // 1. Eliminar el token o toda la sesión
+    sessionStorage.removeItem('token_acceso'); 
+    sessionStorage.clear()
+    // O usa sessionStorage.clear(); para borrar todo
+
+    console.log('Sesión cerrada');
+
+    // 2. Redirigir al login o inicio
+    window.location.href = '/'; 
+  });
+
+// Escuchar el clic en el botón
+  document.getElementById('btnproductos').addEventListener('click', () => {
+    // Aquí puedes hacer algo antes de irte, como leer el token
+    const token = sessionStorage.getItem('token_acceso');
+    
+    if (token) {
+        window.location.href = '/productocambia';
+    } else {
+        alert("Debes iniciar sesión para ver productos");
+        window.location.href = '/signin';
+    }
+});
+
+ document.getElementById('btnAdmin').addEventListener('click', () => {
+    
+ 
+
+    console.log('boton Administracion');
+
+    // 2. Redirigir al login o inicio
+    window.location.href = '/signin'; 
+  });
 
 </script>
 </body>
