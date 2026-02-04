@@ -158,7 +158,7 @@ router.post("/login", async (req, res, next) => {
           !(await bcryptjs.compare(pass, results[0].pass))
         ) {
           console.log("usuario o password incorrecto");
-          res.render("signin", {
+          res.render("auth/signin", {
             alert: true,
             alertTitle: "No se pudo ingresar",
             alertMessage: "¡usuario o password incorrectos",
@@ -203,11 +203,12 @@ router.post("/login", async (req, res, next) => {
           //const perfil = { nombre: "Alex", rol: "admin" };
           //sessionStorage.setItem('sesion_activa', JSON.stringify(perfil));
           console.log("router 205")
-          passport.authenticate("local.signin", {
+          /*passport.authenticate("local.signin", {
             successRedirect: "/profile",
             failureRedirect: "/signin",
             failureFlash: true,
           })(req, res, next);
+          */
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
           console.log("router 213")
@@ -217,7 +218,7 @@ router.post("/login", async (req, res, next) => {
             alertMessage: "¡LOGIN CORRECTO!",
             alertIcon: "success",
             showConfirmButton: false,
-            timer: 1000,
+            timer: 5000,
             ruta: "/profile",
             dni: dni,
             nombre: usr,

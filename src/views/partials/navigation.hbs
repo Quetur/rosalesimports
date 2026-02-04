@@ -63,7 +63,7 @@
         <td>
          <div id="seccion-privada" style="display: none;">
             <button id="btnproductos" class="btn-productos">PRODUCTOS</button>
-            <button id="btnLogout" class="btn-salir">Cerrar Sesión</button>
+            <button id="btnLogout" class="btn-salir">Cerrar Sesion</button>
         </div> 
          <div id="seccion-publica" >
             <button id="btnAdmin" class="btn-salir">Acceso</button>
@@ -77,11 +77,11 @@
 
 <script>
   console.log('partial/navigation.hbs');
-  const token = sessionStorage.getItem('token_acceso');
+  const token = localStorage.getItem('token_acceso');
   const seccion = document.getElementById('seccion-privada');
   if (token) {
     console.log("Token encontrado:", token);
-    const usuario = sessionStorage.getItem('nombre');
+    const usuario = localStorage.getItem('nombre');
     console.log("usario", usuario)
     document.getElementById('usuario').value = usuario;
       // Si existe el token, mostramos el div
@@ -122,8 +122,9 @@
   document.getElementById('btnLogout').addEventListener('click', () => {
     
     // 1. Eliminar el token o toda la sesión
-    sessionStorage.removeItem('token_acceso'); 
-    sessionStorage.clear()
+    console.log('Cerrando sesión');
+    localStorage.removeItem('token_acceso'); 
+    localStorage.removeItem('nombre');
     // O usa sessionStorage.clear(); para borrar todo
 
     console.log('Sesión cerrada');

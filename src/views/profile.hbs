@@ -24,11 +24,11 @@ console.log("entre en profile")
   console.log("profile",'{{{token}}}')
   
   // Este código se ejecuta en el navegador del cliente
-  const mtoken = "{{{token}}}"; // Puedes pasar datos de HBS a JS así
+  const mtoken = "{{{token}}}"; // grabar sesion
   if (mtoken) {
-    console.log("entro aca")
-    sessionStorage.setItem('token_acceso', mtoken);
-    sessionStorage.setItem("nombre", "{{{nombre}}}");
+    console.log("graba sesion")
+    localStorage.setItem('token_acceso', mtoken);
+    localStorage.setItem("nombre", "{{{nombre}}}");
     console.log('Token guardado correctamente');
   }
 else {
