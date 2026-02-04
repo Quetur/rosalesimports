@@ -202,7 +202,7 @@ router.post("/login", async (req, res, next) => {
           // Convertir objeto a string para guardarlo
           //const perfil = { nombre: "Alex", rol: "admin" };
           //sessionStorage.setItem('sesion_activa', JSON.stringify(perfil));
-          console.log("router 210")
+          console.log("router 205")
           passport.authenticate("local.signin", {
             successRedirect: "/profile",
             failureRedirect: "/signin",
@@ -210,7 +210,7 @@ router.post("/login", async (req, res, next) => {
           })(req, res, next);
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
-          console.log("router 218")
+          console.log("router 213")
           res.render("profile",{
             alert: true,
             alertTitle: "Conexión exitosa",
@@ -223,7 +223,8 @@ router.post("/login", async (req, res, next) => {
             nombre: usr,
             token: token,
             logo: results[0].imagen,
-            userid: dni   })
+            userid: dni,
+            token: token  })
         }
       } catch (error) {
         console.log(error);
@@ -234,7 +235,14 @@ router.post("/login", async (req, res, next) => {
     console.log(error);
   }
   console.log("salio router 240")
-  res.render("index",   );
+  res.render("index", { 
+     alert: true,
+            alertTitle: "Conexión exitosa",
+            alertMessage: "¡LOGIN CORRECTO!",
+            alertIcon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+   });
 });
 
 export const verificarEstado = (req, res, next) => {
