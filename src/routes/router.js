@@ -84,6 +84,22 @@ router.post("/login", async (req, res, next) => {
   const dni = req.body.dni;
   const pass = req.body.pass;
   console.log("dni y pass", dni);
+  res.render("profile", {
+            alert: true,
+            alertTitle: "Bienvenido",
+            alertMessage: "¡usuario y password correctos",
+            alertIcon: "error",
+            showConfirmButton: true,
+            timer: 10000,
+            ruta: "/",
+            user: "yo",
+            userid: dni,
+            apellido: "",
+            logo: "",
+            token: "token",
+            nombre: "yo"
+          });
+  /*
   try {
     if (!dni || !pass) {
       res.render("signin", {
@@ -144,8 +160,8 @@ router.post("/login", async (req, res, next) => {
           };
           */
           //res.cookie("jwt", token, cookiesOptions);
-          let usr = results[0].nombre;
-          let apellido = results[0].direccion;
+          let usr = "yo" //results[0].nombre;
+          let apellido = "apellido" // results[0].direccion;
 
           console.log("router 77 - results[0].nombre = ", usr);
           //sessionStorage.setItem('token_acceso', token);
@@ -158,7 +174,7 @@ router.post("/login", async (req, res, next) => {
             failureRedirect: "/signin",
             failureFlash: true,
           })(req, res, next);
-          */
+          
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
           console.log("router 213");
@@ -197,7 +213,7 @@ router.post("/login", async (req, res, next) => {
             showConfirmButton: false,
             timer: 1000,
    });
-   */
+   
   return res.render("auth/profile", {
     alert: true,
     alertTitle: "Conexión exitosa",
@@ -212,6 +228,7 @@ router.post("/login", async (req, res, next) => {
     logo: results[0].imagen,
     userid: dni,
   });
+  */
 });
 
 export const verificarEstado = (req, res, next) => {
