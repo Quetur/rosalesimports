@@ -84,24 +84,7 @@ router.post("/login", async (req, res, next) => {
   const dni = req.body.dni;
   const pass = req.body.pass;
   console.log("dni y pass", dni);
-  res.render("profile", {
-            alert: true,
-            alertTitle: "Bienvenido",
-            alertMessage: "¡usuario y password correctos",
-            alertIcon: "error",
-            showConfirmButton: true,
-            timer: 10000,
-            ruta: "/",
-            user: "yo",
-            userid: dni,
-            apellido: "",
-            logo: "",
-            token: "token",
-            nombre: "yo"
-          });
-  /*
-  try {
-    if (!dni || !pass) {
+  if (!dni || !pass) {
       res.render("signin", {
         alert: true,
         alertTitle: "Advertencia",
@@ -111,16 +94,14 @@ router.post("/login", async (req, res, next) => {
         timer: false,
         ruta: "",
       });
-    } else {
-      console.log("entro aca");
-      try {
-        const [results] = await pool.query(`SELECT * FRom usuario WHERE dni = ?`,dni);
-        console.log("encontro", results.length);
-        console.log("encontro", results[0]);
-        if (
-          results.length == 0 ||
-          !(await bcryptjs.compare(pass, results[0].pass))
-        ) {
+    }
+  else
+    {
+      const [results] = await pool.query(`SELECT * FRom usuario WHERE dni = ?`,dni);
+      console.log("encontro", results.length);
+      console.log("encontro", results[0]);
+        if ( results.length == 0 || !(await bcryptjs.compare(pass, results[0].pass))) 
+          {
           console.log("usuario o password incorrecto");
           return res.render("signin", {
             alert: true,
@@ -135,6 +116,33 @@ router.post("/login", async (req, res, next) => {
             apellido: "",
             logo: "",
           });
+        }
+      else
+        console.log("usuario y password coinciden")
+        { res.render("profile", {
+            alert: true,
+            alertTitle: "Bienvenido",
+            alertMessage: "¡usuario y password correctos",
+            alertIcon: "error",
+            showConfirmButton: true,
+            timer: 10000,
+            ruta: "/",
+            user: results[0].nombre,
+            userid: dni,
+            apellido: results[0].apellido,
+            logo: results[0].imagen,
+            token: "token",
+            nombre: results[0].nombre
+          });
+        }
+    }
+  /*
+  
+
+  try {
+    } else {
+      console.log("entro aca");
+      
         } else {
           //inicio de sesión OK
           console.log("inicio ok");
@@ -160,10 +168,10 @@ router.post("/login", async (req, res, next) => {
           };
           */
           //res.cookie("jwt", token, cookiesOptions);
-          let usr = "yo" //results[0].nombre;
-          let apellido = "apellido" // results[0].direccion;
+          //let usr = results[0].nombre;
+          //let apellido =  results[0].direccion;
 
-          console.log("router 77 - results[0].nombre = ", usr);
+          //console.log("router 77 - results[0].nombre = ", usr);
           //sessionStorage.setItem('token_acceso', token);
           // Convertir objeto a string para guardarlo
           //const perfil = { nombre: "Alex", rol: "admin" };
