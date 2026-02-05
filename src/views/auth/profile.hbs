@@ -14,6 +14,7 @@
                      <input type="text" id="dni" name="dni" placeholder="" value="{{userid}}" readonly></input>
                      <input type="text" id="nombreusuario" name="nombreusuario" placeholder="" value="{{nombre}}" readonly></input>
                      <input type="text" id="token" name="token" placeholder="" value="{{token}}" readonly></input>
+                     <input type="text" id="alert" name="alert" placeholder="" value="{{alert}}" readonly></input>
                      
                 </div>
             </div>
@@ -23,19 +24,19 @@
 </div>
 
 <script type="text/javascript">
-console.log("entre en profile")
+console.log("entre en profile del auth")
     console.log("dni", document.getElementById('dni').value)
     console.log("nombre", document.getElementById('nombreusuario').value)
     console.log("token", document.getElementById('token').value)
  
    setTimeout(() => {
     console.log("Tarea ejecutada tras 3 segundos");
-  }, 3000);
+  }, 5000);
   
   // Este código se ejecuta en el navegador del cliente
  const mtoken = document.getElementById('token').value;
-  
-  if (mtoken) {
+  console.log("mtoken",mtoken)
+  if (document.getElementById('token').value) {
     console.log("graba sesion")
     localStorage.setItem('token_acceso', mtoken);
     localStorage.setItem("nombre", document.getElementById('nombreusuario').value);
@@ -44,7 +45,9 @@ console.log("entre en profile")
 else {
     console.log('No se recibió ningún token');
   }
-   window.location.href = '/'; 
+   setTimeout(() => {
+    console.log("Tarea ejecutada tras 3 segundos");
+  }, 5000);
   
 </script>
 </body>

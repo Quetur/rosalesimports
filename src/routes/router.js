@@ -100,10 +100,7 @@ router.post("/login", async (req, res, next) => {
     } else {
       console.log("entro aca");
       try {
-        const [results, fields] = await pool.query(
-          `SELECT * FRom usuario WHERE dni = ?`,
-          dni
-        );
+        const [results] = await pool.query( `SELECT * FRom usuario WHERE dni = ?`,  dni );
         console.log("encontro", results.length);
         console.log("encontro", results[0]);
         //res.json(result);
@@ -131,6 +128,7 @@ router.post("/login", async (req, res, next) => {
           const id = results[0].dni;
           console.log(id);
           console.log("else esto es results[0]", results[0]);
+          console.log("nombre usuario:", results[0].nombre);
           req.user = results[0];
           // jwt es la libreria
           const token = jwt.sign({ id: id }, process.env.JWT_SECRETO, {
@@ -166,19 +164,22 @@ router.post("/login", async (req, res, next) => {
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
           console.log("router 213")
-          return res.render("auth/profile",{
+          return res.render("auth/profile", {
             alert: true,
-            alertTitle: "Conexión exitosa",
-            alertMessage: "¡LOGIN CORRECTO!",
-            alertIcon: "success",
-            showConfirmButton: false,
-            timer: 5000,
+            alertTitle: "Bienvenido",
+            alertMessage: "¡usuario y password correctos",
+            alertIcon: "error",
+            showConfirmButton: true,
+            timer: 10000,
             ruta: "/",
-            dni: dni,
-            nombre: usr,
+            user: "",
+            userid: dni,
+            apellido: "",
+            logo: "",
             token: token,
-            logo: results[0].imagen,
-            userid: dni })
+            nombre: results[0].nombre,
+            dni: dni,
+          });
         }
       } catch (error) {
         console.log(error);
