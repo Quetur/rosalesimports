@@ -122,7 +122,8 @@ router.post("/login", async (req, res, next) => {
         console.log("usuario y password coinciden")
          //generamos el token SIN fecha de expiracion
          let id = results[0].dni;
-        const token = jwt.sign({id: id}, process.env.JWT_SECRETO)
+        //const token = jwt.sign({id: id}, process.env.JWT_SECRETO)
+        let token = "mi token"
         console.log("TOKEN: " + token + " para el USUARIO : " + dni);
         { res.render("profile", {
             alert: true,
