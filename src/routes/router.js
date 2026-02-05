@@ -166,7 +166,7 @@ router.post("/login", async (req, res, next) => {
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
           console.log("router 213")
-          return res.render("profile",{
+          return res.render("auth/profile",{
             alert: true,
             alertTitle: "Conexión exitosa",
             alertMessage: "¡LOGIN CORRECTO!",
