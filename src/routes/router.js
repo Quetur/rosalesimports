@@ -178,7 +178,7 @@ router.post("/login", async (req, res, next) => {
             logo: "",
             token: token,
             nombre: results[0].nombre,
-            dni: id,
+            dni: id
           });
         }
       } catch (error) {
