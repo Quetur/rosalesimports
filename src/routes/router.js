@@ -189,6 +189,7 @@ router.post("/login", async (req, res, next) => {
     console.log(error);
   }
   console.log("salio router 240")
+  /*
   res.render("index", { 
      alert: true,
             alertTitle: "Conexión exitosa",
@@ -197,6 +198,21 @@ router.post("/login", async (req, res, next) => {
             showConfirmButton: false,
             timer: 1000,
    });
+   */
+   return res.render("auth/profile",{
+            alert: true,
+            alertTitle: "Conexión exitosa",
+            alertMessage: "¡LOGIN CORRECTO!",
+            alertIcon: "success",
+            showConfirmButton: false,
+            timer: 5000,
+            ruta: "/",
+            dni: dni,
+            nombre: usr,
+            token: token,
+            logo: results[0].imagen,
+            userid: dni })
+        
 });
 
 export const verificarEstado = (req, res, next) => {
