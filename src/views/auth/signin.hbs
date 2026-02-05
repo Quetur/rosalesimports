@@ -32,7 +32,7 @@
   
   <script type="text/javascript">
     console.log("entro en signin")
-    console.log("alert", "{{alert}}")
+    console.log("alert", "{{{alert}}}")
     
     if ("{{alert}}" === "true") 
       {
@@ -58,7 +58,7 @@
      // sessionStorage.setItem("dni", "{{dni}}");
      // sessionStorage.setItem("nombre", "user "+ "{{nombre}}");
       
-      window.location = "{{ruta}}";
+    //  window.location = "{{ruta}}";
     })
     }
     
@@ -112,6 +112,7 @@
           return false;
 
         }
+        console.log("antes de submit")
         document.getElementById("formlogin").submit();
       }
     }
