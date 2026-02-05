@@ -100,6 +100,7 @@ router.post("/login", async (req, res, next) => {
       const [results] = await pool.query(`SELECT * FRom usuario WHERE dni = ?`,dni);
       console.log("encontro", results.length);
       console.log("encontro", results[0]);
+
         if ( results.length == 0 || !(await bcryptjs.compare(pass, results[0].pass))) 
           {
           console.log("usuario o password incorrecto");
@@ -119,6 +120,10 @@ router.post("/login", async (req, res, next) => {
         }
       else
         console.log("usuario y password coinciden")
+         //generamos el token SIN fecha de expiracion
+         let id = results[0].dni;
+        const token = jwt.sign({id: id}, process.env.JWT_SECRETO)
+        console.log("TOKEN: " + token + " para el USUARIO : " + dni);
         { res.render("profile", {
             alert: true,
             alertTitle: "Bienvenido",
@@ -131,8 +136,9 @@ router.post("/login", async (req, res, next) => {
             userid: dni,
             apellido: results[0].apellido,
             logo: results[0].imagen,
-            token: "token",
-            nombre: results[0].nombre
+            token: token,
+            nombre: results[0].nombre,
+            ruta: "/",
           });
         }
     }
