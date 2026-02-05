@@ -79,6 +79,7 @@
   console.log('partial/navigation.hbs');
   const token = localStorage.getItem('token_acceso');
   const seccion = document.getElementById('seccion-privada');
+  console.log("token",token);
   if (token) {
     console.log("Token encontrado:", token);
     const usuario = localStorage.getItem('nombre');

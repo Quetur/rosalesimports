@@ -212,20 +212,19 @@ router.post("/login", async (req, res, next) => {
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
           console.log("router 213")
-          res.render("profile",{
+          return res.render("profile",{
             alert: true,
             alertTitle: "Conexión exitosa",
             alertMessage: "¡LOGIN CORRECTO!",
             alertIcon: "success",
             showConfirmButton: false,
             timer: 5000,
-            ruta: "/profile",
+            ruta: "/",
             dni: dni,
             nombre: usr,
             token: token,
             logo: results[0].imagen,
-            userid: dni,
-            token: token  })
+            userid: dni })
         }
       } catch (error) {
         console.log(error);

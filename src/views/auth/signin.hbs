@@ -31,7 +31,7 @@
   </div>
   
   <script type="text/javascript">
-    console.log("paso")
+    console.log("entro en signin")
     console.log("alert", "{{alert}}")
     
     if ("{{alert}}" === "true") 
@@ -42,21 +42,22 @@
           text: 'cargue su DNI !!!...',
           showConfirmButton: false,
           timer: 2000,
-      });
-    }
-    else if ("{{alert}}" === "false") {
-      Swal.fire({
-      title: 'alertTitle ',
-      text: 'alertMessage',
-      icon: ' alertIcon ',
-      showConfirmButton: ' showConfirmButton ',
-      timer: 1000,
+        });
+      }
+      else if ("{{alert}}" === "false") {
+        Swal.fire({
+        title: 'alertTitle ',
+        text: 'alertMessage',
+        icon: ' alertIcon ',
+        showConfirmButton: ' showConfirmButton ',
+        timer: 1000,
 
     }).then(() => {
-      sessionStorage.clear();
-      console.log("dni", "{{dni}}")
-      sessionStorage.setItem("dni", "{{dni}}");
-      sessionStorage.setItem("nombre", "user "+ "{{nombre}}");
+     // sessionStorage.clear();
+     // console.log("dni", "{{dni}}")
+     // sessionStorage.setItem("dni", "{{dni}}");
+     // sessionStorage.setItem("nombre", "user "+ "{{nombre}}");
+      
       window.location = "{{ruta}}";
     })
     }

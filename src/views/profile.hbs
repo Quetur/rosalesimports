@@ -21,14 +21,15 @@
 <script type="text/javascript">
 console.log("entre en profile")
 
-  console.log("profile",'{{{token}}}')
+  console.log("profile",'{{token}}')
   
   // Este código se ejecuta en el navegador del cliente
-  const mtoken = "{{{token}}}"; // grabar sesion
+  const mtoken = '{{token}}'; // grabar sesion
+  
   if (mtoken) {
     console.log("graba sesion")
     localStorage.setItem('token_acceso', mtoken);
-    localStorage.setItem("nombre", "{{{nombre}}}");
+    localStorage.setItem("nombre", "{{nombre}}");
     console.log('Token guardado correctamente');
   }
 else {
