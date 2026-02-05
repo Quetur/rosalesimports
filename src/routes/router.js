@@ -2,11 +2,11 @@ import express from "express";
 const router = express.Router();
 import jwt from "jsonwebtoken";
 import pool from "../database.js";
-import { promisify } from 'util';
+import { promisify } from "util";
 import AWS from "aws-sdk";
 import fs from "fs";
 import bcryptjs from "bcryptjs";
-import passport from '../lib/passport.js'; // Asegúrate de incluir la extensión .js
+import passport from "../lib/passport.js"; // Asegúrate de incluir la extensión .js
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -15,15 +15,15 @@ const s3 = new AWS.S3({
 
 router.get("/", async (req, res) => {
   console.log("router / get / ", req.user);
-  res.render("index",   );
+  res.render("index");
 });
 
 const usuario = () => {
-console.log("entro en usuario")
-//  const token = sessionStorage.getItem("token");
-//console.log("token detro de usuario", token)
+  console.log("entro en usuario");
+  //  const token = sessionStorage.getItem("token");
+  //console.log("token detro de usuario", token)
   // Retorna true si el token existe, false si es null o undefined
- // return !!token;
+  // return !!token;
 };
 
 async function estalogueado(caracteres) {
@@ -65,8 +65,6 @@ function grabarlocalstorage(dni, nombre) {
   //document.getElementById('items').value = productos.length;
 }
 
-
-
 function validateToken(req, res, next) {
   console.log("validate token");
   const { user } = req.body;
@@ -83,10 +81,10 @@ router.post("/login", async (req, res, next) => {
   console.log("ejecuto login router");
   console.log("req.dni", req.body.dni);
   console.log("req.pass", req.body.pass);
+  const dni = req.body.dni;
+  const pass = req.body.pass;
+  console.log("dni y pass", dni);
   try {
-    const dni = req.body.dni;
-    const pass = req.body.pass;
-    console.log("dni y pass", dni);
     if (!dni || !pass) {
       res.render("signin", {
         alert: true,
@@ -100,10 +98,9 @@ router.post("/login", async (req, res, next) => {
     } else {
       console.log("entro aca");
       try {
-        const [results] = await pool.query( `SELECT * FRom usuario WHERE dni = ?`,  dni );
+        const [results] = await pool.query(`SELECT * FRom usuario WHERE dni = ?`,dni);
         console.log("encontro", results.length);
         console.log("encontro", results[0]);
-        //res.json(result);
         if (
           results.length == 0 ||
           !(await bcryptjs.compare(pass, results[0].pass))
@@ -138,13 +135,14 @@ router.post("/login", async (req, res, next) => {
           //const token = jwt.sign({id: id}, process.env.JWT_SECRETO)
           console.log("TOKEN: " + token + " para el USUARIO : " + dni);
           //grabarlocalstorage(dni, results[0].nombre);
-         // res.json({ mensaje: "Logueado" });
-          const cookiesOptions = {
+          // res.json({ mensaje: "Logueado" });
+          /*const cookiesOptions = {
             expires: new Date(
               Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
             ),
             httpOnly: true,
           };
+          */
           //res.cookie("jwt", token, cookiesOptions);
           let usr = results[0].nombre;
           let apellido = results[0].direccion;
@@ -154,7 +152,7 @@ router.post("/login", async (req, res, next) => {
           // Convertir objeto a string para guardarlo
           //const perfil = { nombre: "Alex", rol: "admin" };
           //sessionStorage.setItem('sesion_activa', JSON.stringify(perfil));
-          console.log("router 205")
+          console.log("router 205");
           /*passport.authenticate("local.signin", {
             successRedirect: "/profile",
             failureRedirect: "/signin",
@@ -163,7 +161,7 @@ router.post("/login", async (req, res, next) => {
           */
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
-          console.log("router 213")
+          console.log("router 213");
           return res.render("profile", {
             alert: true,
             alertTitle: "Bienvenido",
@@ -178,7 +176,7 @@ router.post("/login", async (req, res, next) => {
             logo: "",
             token: token,
             nombre: results[0].nombre,
-            dni: id
+            dni: id,
           });
         }
       } catch (error) {
@@ -189,7 +187,7 @@ router.post("/login", async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-  console.log("salio router 240")
+  console.log("salio router 240");
   /*
   res.render("index", { 
      alert: true,
@@ -200,20 +198,20 @@ router.post("/login", async (req, res, next) => {
             timer: 1000,
    });
    */
-   return res.render("auth/profile",{
-            alert: true,
-            alertTitle: "Conexión exitosa",
-            alertMessage: "¡LOGIN CORRECTO!",
-            alertIcon: "success",
-            showConfirmButton: false,
-            timer: 5000,
-            ruta: "/",
-            dni: dni,
-            nombre: usr,
-            token: token,
-            logo: results[0].imagen,
-            userid: dni })
-        
+  return res.render("auth/profile", {
+    alert: true,
+    alertTitle: "Conexión exitosa",
+    alertMessage: "¡LOGIN CORRECTO!",
+    alertIcon: "success",
+    showConfirmButton: false,
+    timer: 5000,
+    ruta: "/",
+    dni: dni,
+    nombre: usr,
+    token: token,
+    logo: results[0].imagen,
+    userid: dni,
+  });
 });
 
 export const verificarEstado = (req, res, next) => {
