@@ -76,7 +76,7 @@ router.post(
 // ingreso
 router.get("/signin", (req, res) => {
   console.log("get signin");
-  res.render("auth/signin");
+  res.render("signin");
 });
 
 

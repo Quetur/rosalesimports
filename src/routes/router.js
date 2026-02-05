@@ -109,7 +109,7 @@ router.post("/login", async (req, res, next) => {
           !(await bcryptjs.compare(pass, results[0].pass))
         ) {
           console.log("usuario o password incorrecto");
-          return res.render("auth/signin", {
+          return res.render("signin", {
             alert: true,
             alertTitle: "No se pudo ingresar",
             alertMessage: "¡usuario o password incorrectos",
@@ -164,7 +164,7 @@ router.post("/login", async (req, res, next) => {
           //console.log("antes de renderizar", pppp);
           // res.render("index", { usr, apellido });
           console.log("router 213")
-          return res.render("auth/profile", {
+          return res.render("profile", {
             alert: true,
             alertTitle: "Bienvenido",
             alertMessage: "¡usuario y password correctos",
