@@ -173,12 +173,12 @@ router.post("/login", async (req, res, next) => {
             timer: 10000,
             ruta: "/",
             user: "",
-            userid: dni,
+            userid: id,
             apellido: "",
             logo: "",
             token: token,
             nombre: results[0].nombre,
-            dni: dni,
+            dni: id,
           });
         }
       } catch (error) {
