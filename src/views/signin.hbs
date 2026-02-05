@@ -9,7 +9,7 @@
           </div>
           <img src="../img/logo.jpg" alt="logo" class="card-img-top mx-auto m-2 rounded-circle w-50">
           <div class="card-body">
-            <form id="formlogin" action="/login" method="POST">
+            <form id="formlogin" action="/login" method="post">
               <div class="form-group">
                 <div class="mb-3 material-textfield">
                   <input type="text" class="form-control input-number" id="dni" name="dni" placeholder=""
@@ -115,14 +115,10 @@
           console.log("antes de submit")
           const form = document.getElementById("formlogin");
           console.log("form >", form)
-                 setTimeout(() => {
-              console.log("Tarea ejecutada tras 3 segundos");
-            }, 5000);
+                
           if (form) {
             console.log("entro en el if antes de submit")
-            setTimeout(() => {
-              console.log("Tarea ejecutada tras 3 segundos");
-            }, 5000);
+          
             form.requestSubmit();
           }
           // document.getElementById("formlogin").submit();
