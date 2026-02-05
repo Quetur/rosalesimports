@@ -1,41 +1,41 @@
 <body>
   <div class="container p-4">
-  <div class="row">
+    <div class="row">
 
-    <div class="col-md-4 mx-auto">
-      <div class="card text-center">
-        <div class="card-header">
-          <h3>Acceso a rosales imports</h3>
-        </div>
-        <img src="../img/logo.jpg" alt="logo" class="card-img-top mx-auto m-2 rounded-circle w-50">
-        <div class="card-body">
-           <form id="formlogin" action="/login" method="POST">
-            <div class="form-group">
-              <div class="mb-3 material-textfield">
-                    <input type="text" class="form-control input-number" id="dni" name="dni" placeholder="" onchange="formatoDni(this)">
-                    <label for="dni" class="">Numero de DNI </label>
-                  </div>
-            </div>
-             <td style="width: 250px !important; text-align: right;">
-                  <input type="text" class="form-control" id="mdni" name="mdni" hidden>
-                  <div class="mb-3 material-textfield">
-                    <input type="password" class="form-control" id="pass" name="pass" style="width: 200px;" >
-                    <label for="password">Contraseña</label>
-                </td>
-            <input class="w-100 btn btn-lg btn-primary" value="Ingresar" onclick="ingresar()" readonly></button>
-          </form>
+      <div class="col-md-4 mx-auto">
+        <div class="card text-center">
+          <div class="card-header">
+            <h3>Acceso a rosales imports</h3>
+          </div>
+          <img src="../img/logo.jpg" alt="logo" class="card-img-top mx-auto m-2 rounded-circle w-50">
+          <div class="card-body">
+            <form id="formlogin" action="/login" method="POST">
+              <div class="form-group">
+                <div class="mb-3 material-textfield">
+                  <input type="text" class="form-control input-number" id="dni" name="dni" placeholder=""
+                    onchange="formatoDni(this)">
+                  <label for="dni" class="">Numero de DNI </label>
+                </div>
+              </div>
+              <td style="width: 250px !important; text-align: right;">
+                <input type="text" class="form-control" id="mdni" name="mdni" hidden>
+                <div class="mb-3 material-textfield">
+                  <input type="password" class="form-control" id="pass" name="pass" style="width: 200px;">
+                  <label for="password">Contraseña</label>
+              </td>
+              <input class="w-100 btn btn-lg btn-primary" value="Ingresar" onclick="ingresar()" readonly></input>
+            </form>
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  
-  <script type="text/javascript">
-    console.log("entro en signin")
-    console.log("alert", "{{{alert}}}")
-    
-    if ("{{alert}}" === "true") 
-      {
+
+    <script type="text/javascript">
+      console.log("entro en signin")
+      console.log("alert", "{{{alert}}}")
+
+      if ("{{alert}}" === "true") {
         Swal.fire({
           icon: 'error',
           title: ' USUARIO INCORRECTO',
@@ -46,98 +46,110 @@
       }
       else if ("{{alert}}" === "false") {
         Swal.fire({
-        title: 'alertTitle ',
-        text: 'alertMessage',
-        icon: ' alertIcon ',
-        showConfirmButton: ' showConfirmButton ',
-        timer: 1000,
+          title: 'alertTitle ',
+          text: 'alertMessage',
+          icon: ' alertIcon ',
+          showConfirmButton: ' showConfirmButton ',
+          timer: 1000,
 
-    }).then(() => {
-     // sessionStorage.clear();
-     // console.log("dni", "{{dni}}")
-     // sessionStorage.setItem("dni", "{{dni}}");
-     // sessionStorage.setItem("nombre", "user "+ "{{nombre}}");
-      
-    //  window.location = "{{ruta}}";
-    })
-    }
-    
-    $(document).ready(function () {
+        }).then(() => {
+          // sessionStorage.clear();
+          // console.log("dni", "{{dni}}")
+          // sessionStorage.setItem("dni", "{{dni}}");
+          // sessionStorage.setItem("nombre", "user "+ "{{nombre}}");
 
-      
-      $('.ingresar').on('click', function (e) {
+          //  window.location = "{{ruta}}";
+        })
+      }
 
-        console.log('ingresar');
-       if (str < 0) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'El producto debe ser mayor a 0',
-            timer: 2000
-          })
-
-        console.log(str);
-       }
-      });
-    });
-  </script>
+      $(document).ready(function () {
 
 
+        $('.ingresar').on('click', function (e) {
 
-<script type="text/javascript">
-     
-    function ingresar() {
-      if ((document.getElementById('dni').value).length == 0) {
-        document.getElementById("dni").focus();
-        Swal.fire({
-          icon: 'error',
-          title: ' USUARIO INCORRECTO',
-          text: 'cargue su DNI !!!...',
-          showConfirmButton: false,
-          timer: 2000,
+          console.log('ingresar');
+          if (str < 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'El producto debe ser mayor a 0',
+              timer: 2000
+            })
+
+            console.log(str);
+          }
         });
-        return false;
-      } else {
-        if ((document.getElementById('pass').value).length == 0) {
-          console.log("pass = nada")
-          //console.log("cliente : "document.getElementById('combo_cliente').value);
-          document.getElementById("pass").focus();
+      });
+    </script>
+
+
+
+    <script type="text/javascript">
+
+      function ingresar() {
+        if ((document.getElementById('dni').value).length == 0) {
+          document.getElementById("dni").focus();
           Swal.fire({
             icon: 'error',
-            title: ' PASSWORD VACIO',
-            text: 'cargue su contraseña !!!...',
+            title: ' USUARIO INCORRECTO',
+            text: 'cargue su DNI !!!...',
             showConfirmButton: false,
             timer: 2000,
           });
           return false;
+        } else {
+          if ((document.getElementById('pass').value).length == 0) {
+            console.log("pass = nada")
+            //console.log("cliente : "document.getElementById('combo_cliente').value);
+            document.getElementById("pass").focus();
+            Swal.fire({
+              icon: 'error',
+              title: ' PASSWORD VACIO',
+              text: 'cargue su contraseña !!!...',
+              showConfirmButton: false,
+              timer: 2000,
+            });
+            return false;
 
+          }
+          console.log("antes de submit")
+          const form = document.getElementById("formlogin");
+          console.log("form >", form)
+                 setTimeout(() => {
+              console.log("Tarea ejecutada tras 3 segundos");
+            }, 5000);
+          if (form) {
+            console.log("entro en el if antes de submit")
+            setTimeout(() => {
+              console.log("Tarea ejecutada tras 3 segundos");
+            }, 5000);
+            form.requestSubmit();
+          }
+          // document.getElementById("formlogin").submit();
         }
-        console.log("antes de submit")
-        document.getElementById("formlogin").submit();
       }
-    }
 
-     function formatoDni(e) {
-      console.log("dni : ", (document.getElementById('dni').value).length)
-      var temp = document.getElementById('dni').value
-      temp = temp.replaceAll('.', '')
-      console.log("nuevo dni", temp)
-      document.getElementById('mdni').value = temp
-      console.log("mdni >", document.getElementById('mdni').value)
-      document.getElementById('mdni').value = temp
-    }
-
-     $("#dni").on({
-      "focus": function(event) {
-        $(event.target).select();
-      },
-      "keyup": function(event) {
-        $(event.target).val(function(index, value) {
-          return value.replace(/\D/g, "")
-            .replace(/([0-9])/, '$1')
-            .replace(/\B(?=(\d{3})+(?!\d)\.?)/g, ".");
-        });
+      function formatoDni(e) {
+        console.log("dni : ", (document.getElementById('dni').value).length)
+        var temp = document.getElementById('dni').value
+        temp = temp.replaceAll('.', '')
+        console.log("nuevo dni", temp)
+        document.getElementById('mdni').value = temp
+        console.log("mdni >", document.getElementById('mdni').value)
+        document.getElementById('mdni').value = temp
       }
-    });
-  </script>
+
+      $("#dni").on({
+        "focus": function (event) {
+          $(event.target).select();
+        },
+        "keyup": function (event) {
+          $(event.target).val(function (index, value) {
+            return value.replace(/\D/g, "")
+              .replace(/([0-9])/, '$1')
+              .replace(/\B(?=(\d{3})+(?!\d)\.?)/g, ".");
+          });
+        }
+      });
+    </script>
 </body>
