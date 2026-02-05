@@ -139,14 +139,10 @@
 // Escuchar el clic en el botón
   document.getElementById('btnproductos').addEventListener('click', () => {
     // Aquí puedes hacer algo antes de irte, como leer el token
-    const token = sessionStorage.getItem('token_acceso');
-    
-    if (token) {
+        
         window.location.href = '/productocambia';
-    } else {
-        alert("Debes iniciar sesión para ver productos");
-        window.location.href = '/signin';
-    }
+  
+
 });
 
  document.getElementById('btnAdmin').addEventListener('click', () => {
