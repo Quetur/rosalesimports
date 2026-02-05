@@ -65,53 +65,7 @@ function grabarlocalstorage(dni, nombre) {
   //document.getElementById('items').value = productos.length;
 }
 
-router.get("/home", async (req, res) => {
-  console.log("router /home");
-  try {
-    console.log("resultados de req.cookies.jwt", req.cookies.jwt);
 
-    if (req.cookies.jwt != undefined) {
-      console.log("tiene cookies");
-      try {
-        req.user = await estalogueado(req.cookies.jwt);
-        console.log("req.user", req.user.dni);
-        console.log("req.usr ", req.user.nombre);
-        if (req.user) {
-          console.log(
-            "existe user router/home",
-            req.user.nombre,
-            req.user.imagen,
-            req.user.dni
-          );
-          res.render("lista18", {
-            user: req.user.nombre,
-            logo: req.user.imagen,
-            userid: req.user.dni,
-          });
-          //res.render("lista10",{ user: req.user});
-          //res.render("home", { registro: results, user: req.user });
-        } else {
-          console.log("NO esta adentro router/home");
-          //res.render("home", { registro: results, user: false });
-          // lo saco para probar 5/8 res.render("lista18",{ user: false});
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      console.log("no tiene cookies");
-      //res.render("lista10",{ user: false});
-      res.render("lista18", { user: false });
-      //res.render("home", { registro: results, user: false });
-    }
-
-    //console.log("usuario registrado", req.user.nombre )
-  } catch (error) {
-    {
-      console.log(error);
-    }
-  }
-});
 
 function validateToken(req, res, next) {
   console.log("validate token");
@@ -158,7 +112,7 @@ router.post("/login", async (req, res, next) => {
           !(await bcryptjs.compare(pass, results[0].pass))
         ) {
           console.log("usuario o password incorrecto");
-          res.render("auth/signin", {
+          return res.render("auth/signin", {
             alert: true,
             alertTitle: "No se pudo ingresar",
             alertMessage: "¡usuario o password incorrectos",

@@ -11,6 +11,10 @@
                         Save your Links    
                     </a>
                     -->
+                     <input type="text" id="dni" name="dni" placeholder="" value="{{userid}}" readonly></input>
+                     <input type="text" id="nombreusuario" name="nombreusuario" placeholder="" value="{{nombre}}" readonly></input>
+                     <input type="text" id="token" name="token" placeholder="" value="{{token}}" readonly></input>
+                     
                 </div>
             </div>
         </div>
@@ -20,16 +24,21 @@
 
 <script type="text/javascript">
 console.log("entre en profile")
-
-  console.log("profile",'{{token}}')
+    console.log("dni", document.getElementById('dni').value)
+    console.log("nombre", document.getElementById('nombreusuario').value)
+    console.log("token", document.getElementById('token').value)
+ 
+   setTimeout(() => {
+    console.log("Tarea ejecutada tras 3 segundos");
+  }, 3000);
   
   // Este código se ejecuta en el navegador del cliente
-  const mtoken = '{{token}}'; // grabar sesion
+ const mtoken = document.getElementById('token').value;
   
   if (mtoken) {
     console.log("graba sesion")
     localStorage.setItem('token_acceso', mtoken);
-    localStorage.setItem("nombre", "{{nombre}}");
+    localStorage.setItem("nombre", document.getElementById('nombreusuario').value);
     console.log('Token guardado correctamente');
   }
 else {
